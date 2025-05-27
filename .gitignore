@@ -1,0 +1,62 @@
+=============== CLion (JetBrains) ===============
+.idea/
+*.iml
+
+=============== Build directories ===============
+cmake-build-*/
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+=============== Compiled binary files ===============
+*.o
+*.obj
+*.lo
+*.a
+*.la
+*.so
+*.dll
+*.dylib
+*.lib
+*.exe
+*.out
+*.app
+
+=============== Debug & release files ===============
+*.dSYM/
+*.pdb
+*.ilk
+*.idb
+
+=============== Logs and temporary files ===============
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+*.swo
+*.swn
+
+=============== OS generated files ===============
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+=============== Editor/Tool specific ===============
+.vscode/
+compile_commands.json
+
+=============== Application-specific data files ===============
+*.sav
+*.data
+*.dat
+*.json
+
+=============== CTest & CMake testing ===============
+Testing/
+CTestTestfile.cmake
+CTestCostData.txt
+DartConfiguration.tcl

@@ -8,3 +8,4 @@ void setupMenus(HWND hwnd) {
 void handleMenuCommand(HWND hwnd, WPARAM wp) {
     // Handle menu choices (set color, algorithm, etc.)
 }
+

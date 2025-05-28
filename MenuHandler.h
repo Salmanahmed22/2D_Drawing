@@ -1,5 +1,8 @@
-#pragma once
+#ifndef MENUHANDLER_H
+#define MENUHANDLER_H
+
 #include <windows.h>
 
-void setupMenus(HWND hwnd);
-void handleMenuCommand(HWND hwnd, WPARAM wp);
+void HandleMenuCommand(HWND hwnd, WPARAM wp);
+
+#endif

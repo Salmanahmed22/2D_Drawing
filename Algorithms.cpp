@@ -23,7 +23,7 @@ void Draw8Points(HDC hdc, int xc, int yc, int x, int y, COLORREF c) {
 
 //========================\\
 
-
+//Circle
 void Algorithms::DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
     int x = 0, y = R;
     int d = 1 - R;
@@ -42,5 +42,25 @@ void Algorithms::DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLO
         }
         d1 += 2;
         Draw8Points(hdc, xc, yc, x, y, c);
+    }
+}
+
+
+//Ellipse
+void Algorithms::DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORREF c) {
+    // calc y from x from -a to a
+    for (int x = -a; x <= a; x++) {
+        double y = b * sqrt(1.0 - (double)(x * x) / (a * a));
+        int ry = Round(y);
+        SetPixel(hdc, xc + x, yc + ry, c);
+        SetPixel(hdc, xc + x, yc - ry, c);
+    }
+
+    // calc x from y from -b to b
+    for (int y = -b; y <= b; y++) {
+        double x = a * sqrt(1.0 - (double)(y * y) / (b * b));
+        int rx = Round(x);
+        SetPixel(hdc, xc + rx, yc + y, c);
+        SetPixel(hdc, xc - rx, yc + y, c);
     }
 }

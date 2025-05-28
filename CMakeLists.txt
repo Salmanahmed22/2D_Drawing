@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.28)
 project(2D_Drawing)
 
 set(CMAKE_CXX_STANDARD 14)

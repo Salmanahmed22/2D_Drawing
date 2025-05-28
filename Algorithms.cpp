@@ -24,7 +24,7 @@ void Draw8Points(HDC hdc, int xc, int yc, int x, int y, COLORREF c) {
 //========================\\
 
 
-void Algorithms::DrawModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
+void Algorithms::DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
     int x = 0, y = R;
     int d = 1 - R;
     int d1 = 3, d2 = 5 - 2 * R;

@@ -60,6 +60,8 @@ void Algorithms::InterpolatedColoredLine(HDC hdc, int x1, int y1, int x2, int y2
 }
 
 //Curves
+
+//hermite
 void Algorithms::drawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , int x2, int y2 , int u2, int v2, COLORREF c){
     int hermiteMatrix[4][4] = {
             { 2, -2,  1,  1 },
@@ -86,4 +88,60 @@ void Algorithms::drawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , in
         SetPixel(hdc, Utils::Round(x), Utils::Round(y),c);
     }
 }
+
+//bezier
+
+Point bezierPoint(double t, const Point& alpha, const Point& beta, const Point& gamma, const Point& delta) {
+    Point p;
+    p.x = alpha.x * t * t * t + beta.x * t * t + gamma.x * t + delta.x;
+    p.y = alpha.y * t * t * t + beta.y * t * t + gamma.y * t + delta.y;
+    return p;
+}
+
+void computeBezierCoefficients(const Point& P0, const Point& P1, const Point& P2, const Point& P3,
+                               Point& alpha, Point& beta, Point& gamma, Point& delta) {
+    delta = P0;
+    gamma.x = 3 * (P1.x - P0.x);
+    gamma.y = 3 * (P1.y - P0.y);
+    beta.x = 3 * (P2.x - 2 * P1.x + P0.x);
+    beta.y = 3 * (P2.y - 2 * P1.y + P0.y);
+    alpha.x = P3.x - P0.x - gamma.x - beta.x;
+    alpha.y = P3.y - P0.y - gamma.y - beta.y;
+}
+
+void drawBezierCurve(HDC hdc, const Point& P0, const Point& P1, const Point& P2, const Point& P3) {
+    Point alpha, beta, gamma, delta;
+    computeBezierCoefficients(P0, P1, P2, P3, alpha, beta, gamma, delta);
+
+    const int steps = 1000;
+    for (int i = 0; i <= steps; ++i) {
+        double t = (double)i / steps;
+        Point pt = bezierPoint(t, alpha, beta, gamma, delta);
+        SetPixel(hdc, (int)pt.x, (int)pt.y, RGB(255, 0, 0)); // Red pixel
+    }
+}
+
+
+//flood fill
+void FloodFill(int x, int y, COLORREF targetColor) {
+    stack<Point> s;
+    s.push({ x, y });
+
+    while (!s.empty()) {
+        Point p = s.top();
+        s.pop();
+
+        COLORREF current = GetPixel(globalHDC, p.x, p.y);
+        if (current != targetColor || current == fillColor)
+            continue;
+
+        SetPixel(globalHDC, p.x, p.y, fillColor);
+
+        s.push({ p.x + 1, p.y });
+        s.push({ p.x - 1, p.y });
+        s.push({ p.x, p.y + 1 });
+        s.push({ p.x, p.y - 1 });
+    }
+}
+
 

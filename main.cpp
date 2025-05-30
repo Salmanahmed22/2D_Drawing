@@ -3,6 +3,9 @@
 using namespace std;
 // Global Data
 vector<POINT> points;
+HBRUSH hBackgroundBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
+HCURSOR hCurrentCursor = LoadCursor(NULL, IDC_ARROW);
+
 
 // Menu Command IDs
 #define IDM_BG_WHITE          1
@@ -167,15 +170,36 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     switch (msg) {
         case WM_COMMAND: {
             switch (LOWORD(wp)) {
-                case IDM_BG_WHITE:   // TODO: Implement background color change
-                case IDM_BG_BLACK:
-                case IDM_CURSOR_ARROW: // TODO: Change cursor
-                case IDM_CURSOR_CROSS:
+                case IDM_BG_WHITE:{
+                    hBackgroundBrush = (HBRUSH) GetStockObject(WHITE_BRUSH);
+                    InvalidateRect(hwnd, nullptr, TRUE);
+                    break;
+                }
+                case IDM_BG_BLACK: {
+                    hBackgroundBrush = (HBRUSH) GetStockObject(BLACK_BRUSH);
+                    InvalidateRect(hwnd, nullptr, TRUE);
+                    break;
+                }
+                case IDM_CURSOR_ARROW: {
+                    hCurrentCursor = LoadCursor(nullptr, IDC_ARROW);
+                    SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR) hCurrentCursor);
+                    SetCursor(hCurrentCursor);
+                    break;
+                }
+                case IDM_CURSOR_CROSS: {
+                    hCurrentCursor = LoadCursor(nullptr, IDC_CROSS);
+                    SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR) hCurrentCursor);
+                    SetCursor(hCurrentCursor);
+                    break;
+                }
                 case IDM_SAVE:       // TODO: Implement Save
                 case IDM_LOAD:       // TODO: Implement Load
                 case IDM_LINE_DDA:   // TODO: Implement DDA Line
                 case IDM_LINE_MIDPOINT:
-                case IDM_LINE_PARAMETRIC:
+                case IDM_LINE_PARAMETRIC:{
+                    currentOption = IDM_LINE_PARAMETRIC;
+                    break;
+                }
                 case IDM_CIRCLE_DIRECT:
                 case IDM_CIRCLE_POLAR:
                 case IDM_CIRCLE_ITER_POLAR:
@@ -213,7 +237,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
                 case IDM_CIRCLE_ITER_POLAR:
                 case IDM_CIRCLE_MIDPOINT:
                 case IDM_CIRCLE_MOD_MID:{
-                    hdc = GetDC(hwnd);
                     xc = LOWORD(lp);
                     yc = HIWORD(lp);
                     break;
@@ -255,13 +278,24 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             }
             break;
         }
-
-        case WM_DESTROY:
+        case WM_ERASEBKGND: {
+            hdc = (HDC)wp;
+            RECT rect;
+            GetClientRect(hwnd, &rect);
+            FillRect(hdc, &rect, hBackgroundBrush);
+            return 1;
+        }
+        case WM_SETCURSOR: {
+            SetCursor(hCurrentCursor);
+            return TRUE;
+        }
+        case WM_DESTROY: {
             PostQuitMessage(0);
             break;
-
-        default:
+        }
+        default: {
             return DefWindowProc(hwnd, msg, wp, lp);
+        }
     }
     return 0;
 }

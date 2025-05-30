@@ -1,9 +1,8 @@
-#include <windows.h>
-#include <vector>
+#include <bits/stdc++.h>
 #include "Algorithms.h"
-
+using namespace std;
 // Global Data
-std::vector<POINT> points;
+vector<POINT> points;
 
 // Menu Command IDs
 #define IDM_BG_WHITE          1
@@ -162,9 +161,11 @@ void SetupMenus(HWND hwnd) {
 
 // WndProc (Placeholder for now)
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
-
+    HDC hdc;
+    static int currentOption = 0;
+    static int xc, yc;
     switch (msg) {
-        case WM_COMMAND:
+        case WM_COMMAND: {
             switch (LOWORD(wp)) {
                 case IDM_BG_WHITE:   // TODO: Implement background color change
                 case IDM_BG_BLACK:
@@ -179,7 +180,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
                 case IDM_CIRCLE_POLAR:
                 case IDM_CIRCLE_ITER_POLAR:
                 case IDM_CIRCLE_MIDPOINT:
-                case IDM_CIRCLE_MOD_MID:
+                case IDM_CIRCLE_MOD_MID: {
+                    currentOption = IDM_CIRCLE_MOD_MID;
+                    break;
+                }
                 case IDM_FILL_CIRCLE_LINES:
                 case IDM_FILL_CIRCLE_CIRC:
                 case IDM_FILL_SQUARE_HERM:
@@ -201,6 +205,56 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
                     break;
             }
             break;
+        }
+        case WM_LBUTTONDOWN:{
+            switch (currentOption) {
+                case IDM_CIRCLE_DIRECT:
+                case IDM_CIRCLE_POLAR:
+                case IDM_CIRCLE_ITER_POLAR:
+                case IDM_CIRCLE_MIDPOINT:
+                case IDM_CIRCLE_MOD_MID:{
+                    hdc = GetDC(hwnd);
+                    xc = LOWORD(lp);
+                    yc = HIWORD(lp);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
+        case WM_LBUTTONUP:{
+            switch (currentOption) {
+                case IDM_CIRCLE_DIRECT:
+                case IDM_CIRCLE_POLAR:
+                case IDM_CIRCLE_ITER_POLAR:
+                case IDM_CIRCLE_MIDPOINT:
+                case IDM_CIRCLE_MOD_MID:{
+                    hdc = GetDC(hwnd);
+                    int x, y, r;
+                    x = LOWORD(lp);
+                    y = HIWORD(lp);
+                    r = static_cast<int>(sqrt((x - xc) * (x - xc) + (y - yc) * (y - yc)));
+                    switch (currentOption) {
+                        case IDM_CIRCLE_DIRECT:
+                        case IDM_CIRCLE_POLAR:
+                        case IDM_CIRCLE_ITER_POLAR:
+                        case IDM_CIRCLE_MIDPOINT:
+                        case IDM_CIRCLE_MOD_MID:{
+                            DrawCircleModifiedMidpoint(hdc, xc, yc, r, RGB(0, 0, 255));
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                    ReleaseDC(hwnd, hdc);
+                    break;
+                }
+                default:
+                    break;
+            }
+            break;
+        }
 
         case WM_DESTROY:
             PostQuitMessage(0);

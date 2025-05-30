@@ -4,4 +4,5 @@ project(2D_Drawing)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(2D_Drawing
-        main.cpp)
+        main.cpp
+        Algorithms.cpp)

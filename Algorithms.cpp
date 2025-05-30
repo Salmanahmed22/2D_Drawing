@@ -137,3 +137,26 @@ void FloodFillRec(HDC hdc , int x ,int y , COLORREF borderColor, COLORREF fillCo
     FloodFillRec(hdc,x,y-1,borderColor,fillColor);
 }
 
+//Cardinal Spline Curve
+struct Point2D{
+    double x, y;
+    Point2D(double x = 0.0, double y = 0.0):x(x),y(y){};
+};
+
+void DrawCardinalSpline(HDC hdc, Point2D P[], int n, double c, COLORREF color) {
+    if (n < 4) return;
+    double s = c/2.0;
+    for (int i = 1; i < n - 2; ++i) {
+        int T1x = (int)(s * (P[i + 1].x - P[i - 1].x));
+        int T1y = (int)(s * (P[i + 1].y - P[i - 1].y));
+        int T2x = (int)(s * (P[i + 2].x - P[i].x));
+        int T2y = (int)(s * (P[i + 2].y - P[i].y));
+
+        DrawHermiteCurve(
+            hdc,
+            (int)P[i].x, (int)P[i].y,T1x, T1y,
+            (int)P[i + 1].x, (int)P[i + 1].y,T2x, T2y,
+            color
+        );
+    }
+}

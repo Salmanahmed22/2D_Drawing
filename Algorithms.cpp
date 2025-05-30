@@ -3,6 +3,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TableEntry {
+    int xLeft;
+    int xRight;
+};
+typedef TableEntry Table[1000];
 
 //Circle
 void DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
@@ -227,3 +232,60 @@ void CohenSutherland(POINT p1, POINT p2, Window window,HDC hdc, COLORREF c) {
 //    else return {false, {p1, p2}};
     if (visible) ParametricLine(hdc,p1.x,p1.y,p2.x,p2.y,c);
 }
+
+
+// convex filling algorithm
+void InitTable(Table t) {
+    for (int i = 0; i < 1000; ++i) {
+        t[i].xLeft = INT_MAX;
+        t[i].xRight = INT_MIN;
+    }
+}
+
+
+void edge2Table(POINT p1, POINT p2, Table t) {
+    if (p2.y == p1.y) return;
+
+    if (p1.y > p2.y) swap(p1, p2);
+
+    double x = p1.x;
+    int y = p1.y;
+    double mInv = static_cast<double>(p2.x - p1.x) / (p2.y - p1.y);
+
+    while (y < p2.y) {
+        if (x < t[y].xLeft) t[y].xLeft = static_cast<int>(ceil(x));
+        if (x > t[y].xRight) t[y].xRight = static_cast<int>(floor(x));
+        x += mInv;
+        y++;
+    }
+}
+
+
+void polygonToTable(POINT p[], int n, Table t) {
+    POINT v1 = p[n - 1];
+    for (int i = 0; i < n; ++i) {
+        POINT v2 = p[i];
+        edge2Table(v1, v2, t);
+        v1 = v2;
+    }
+}
+
+
+void tableToScreen(HDC hdc, Table t, COLORREF c) {
+    for (int y = 0; y < 1000; ++y) {
+        if (t[y].xLeft < t[y].xRight) {
+            for (int x = t[y].xLeft; x <= t[y].xRight; ++x) {
+                SetPixel(hdc, x, y, c);
+            }
+        }
+    }
+}
+
+
+void convexFilling(HDC hdc, POINT p[], int n, COLORREF c) {
+    Table t;
+    InitTable(t);
+    polygonToTable(p, n, t);
+    tableToScreen(hdc, t, c);
+}
+

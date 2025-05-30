@@ -18,7 +18,7 @@ Implement Circle algorithms
  Polar,
   iterative Polar,
    midpoint
-    and modified Midpoint (Done)]
+    and modified Midpoint ✅]
 
 Filling Circle with lines after taking filling quarter from user
 Filling Circle with other circles after taking filling quarter from user
@@ -34,15 +34,15 @@ and Non-Recursive Flood Fill ✅
 Cardinal Spline Curve
 
 Ellipse Algorithms
-[Direct (Done),
+[Direct ✅,
  polar
  and midpoint]
 
 Clipping algorithms using Rectangle as Clipping Window to clip
 [Point,
- Line, (Done)
-  Polygon]
+ Line, ✅
+  Polygon ✅]
 
 Clipping algorithms using Square as Clipping Window to clip
 [Point,
- Line (Done)]
+ Line ✅]

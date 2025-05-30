@@ -52,7 +52,7 @@ void DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORREF c) {
 }
 
 //Line
-void ParametricLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
+void drawParametricLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
     int alpha1 = x2 - x1, alpha2 = y2 - y1;
 
     float step = 1.0 / max(abs(alpha1),abs(alpha2));
@@ -230,7 +230,105 @@ void CohenSutherland(POINT p1, POINT p2, Window window,HDC hdc, COLORREF c) {
 
 //    if (visible) return {true, {p1, p2}};
 //    else return {false, {p1, p2}};
-    if (visible) ParametricLine(hdc,p1.x,p1.y,p2.x,p2.y,c);
+    if (visible) drawParametricLine(hdc, p1.x, p1.y, p2.x, p2.y, c);
+}
+
+
+//polygon clipping
+vector<POINT> leftClip(vector<POINT> ps, int Xleft) {
+    int n = ps.size();
+    POINT p1 = ps[n - 1];
+    bool in1 = (p1.x >= Xleft);
+    vector<POINT> ret;
+    for (int i = 0; i < n; ++i) {
+        POINT p2 = ps[i];
+        bool in2 = (p2.x >= Xleft);
+        if (in1 && in2) ret.push_back(p2);
+        else if (in1) ret.push_back(Hintersect(Xleft, p1, p2));
+        else if (in2) {
+            ret.push_back(Hintersect(Xleft, p1, p2));
+            ret.push_back(p2);
+        }
+        in1 = in2;
+        p1 = p2;
+    }
+    return ret;
+}
+
+vector<POINT> rightClip(vector<POINT> ps, int Xright) {
+    int n = ps.size();
+    POINT p1 = ps[n - 1];
+    bool in1 = (p1.x <= Xright);
+    vector<POINT> ret;
+    for (int i = 0; i < n; ++i) {
+        POINT p2 = ps[i];
+        bool in2 = (p2.x <= Xright);
+        if (in1 && in2) ret.push_back(p2);
+        else if (in1) ret.push_back(Hintersect(Xright, p1, p2));
+        else if (in2) {
+            ret.push_back(Hintersect(Xright, p1, p2));
+            ret.push_back(p2);
+        }
+        in1 = in2;
+        p1 = p2;
+    }
+    return ret;
+}
+
+vector<POINT> bottomClip(vector<POINT> ps, int Ybottom) {
+    int n = ps.size();
+    POINT p1 = ps[n - 1];
+    bool in1 = (p1.y >= Ybottom);
+    vector<POINT> ret;
+    for (int i = 0; i < n; ++i) {
+        POINT p2 = ps[i];
+        bool in2 = (p2.y >= Ybottom);
+        if (in1 && in2) ret.push_back(p2);
+        else if (in1) ret.push_back(Vintersect(Ybottom, p1, p2));
+        else if (in2) {
+            ret.push_back(Vintersect(Ybottom, p1, p2));
+            ret.push_back(p2);
+        }
+        in1 = in2;
+        p1 = p2;
+    }
+    return ret;
+}
+
+vector<POINT> topClip(vector<POINT> ps, int Ytop) {
+    int n = ps.size();
+    POINT p1 = ps[n - 1];
+    bool in1 = (p1.y <= Ytop);
+    vector<POINT> ret;
+    for (int i = 0; i < n; ++i) {
+        POINT p2 = ps[i];
+        bool in2 = (p2.y <= Ytop);
+        if (in1 && in2) ret.push_back(p2);
+        else if (in1) ret.push_back(Vintersect(Ytop, p1, p2));
+        else if (in2) {
+            ret.push_back(Vintersect(Ytop, p1, p2));
+            ret.push_back(p2);
+        }
+        in1 = in2;
+        p1 = p2;
+    }
+    return ret;
+}
+
+void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c) {
+    vector<POINT> p1 = leftClip(ps, window.leftX);
+    vector<POINT> p2 = topClip(p1, window.topY);
+    vector<POINT> p3 = rightClip(p2, window.rightX);
+    vector<POINT> res = bottomClip(p3, window.bottomY);
+
+    if (!res.empty()) {
+        POINT p1 = res[res.size() - 1];
+        for (int i = 0; i < res.size(); ++i) {
+            POINT p2 = res[i];
+            drawParametricLine(hdc, p1.x, p1.y, p2.x, p2.y, c);
+            p1 = p2;
+        }
+    }
 }
 
 

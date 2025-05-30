@@ -99,7 +99,7 @@ void Algorithms::drawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, cons
     for (int i = 0; i <= steps; ++i) {
         double t = (double)i / steps;
         POINT pt = Utils::bezierPoint(t, alpha, beta, gamma, delta);
-        SetPixel(hdc, (int)pt.x, (int)pt.y, RGB(255, 0, 0)); // Red pixel
+        SetPixel(hdc, Utils::Round(pt.x), Utils::Round(pt.y), RGB(255, 0, 0)); // Red pixel
     }
 }
 

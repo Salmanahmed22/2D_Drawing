@@ -28,8 +28,8 @@ Filling Rectangle with Bezier Curve [horizontal]
 Convex
 and Non-Convex Filling Algorithm
 
-Recursive
-and Non-Recursive Flood Fill
+Recursive ✅
+and Non-Recursive Flood Fill ✅
 
 Cardinal Spline Curve
 

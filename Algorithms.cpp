@@ -126,4 +126,14 @@ void FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) 
     }
 }
 
+//Recursive Flood Fill
+void FloodFillRec(HDC hdc , int x ,int y , COLORREF borderColor, COLORREF fillColor) {
+    COLORREF c = GetPixel(hdc, x, y );
+    if (c==borderColor || c==fillColor) return;
+    SetPixel(hdc,x,y,fillColor);
+    FloodFillRec(hdc,x+1,y,borderColor,fillColor);
+    FloodFillRec(hdc,x-1,y,borderColor,fillColor);
+    FloodFillRec(hdc,x,y+1,borderColor,fillColor);
+    FloodFillRec(hdc,x,y-1,borderColor,fillColor);
+}
 

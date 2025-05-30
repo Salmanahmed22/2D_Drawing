@@ -47,7 +47,7 @@ void DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORREF c) {
 }
 
 //Line
-void InterpolatedColoredLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
+void ParametricLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
     int alpha1 = x2 - x1, alpha2 = y2 - y1;
 
     float step = 1.0 / max(abs(alpha1),abs(alpha2));
@@ -194,7 +194,7 @@ POINT Vintersect(double Yedge, POINT p1, POINT p2) {
     return res;
 }
 
-pair<bool, pair<POINT, POINT>> CohenSutherland(POINT p1, POINT p2, Window window) {
+void CohenSutherland(POINT p1, POINT p2, Window window,HDC hdc, COLORREF c) {
     outCode out1 = getOutcode(p1, window);
     outCode out2 = getOutcode(p2, window);
     bool visible = false;
@@ -223,6 +223,7 @@ pair<bool, pair<POINT, POINT>> CohenSutherland(POINT p1, POINT p2, Window window
         }
     }
 
-    if (visible) return {true, {p1, p2}};
-    else return {false, {p1, p2}};
+//    if (visible) return {true, {p1, p2}};
+//    else return {false, {p1, p2}};
+    if (visible) ParametricLine(hdc,p1.x,p1.y,p2.x,p2.y,c);
 }

@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include "windows.h"
+#include "Algorithms.h"
 #include <bits/stdc++.h>
 using namespace std;
 //=========Utils========\\
@@ -48,4 +49,12 @@ POINT Utils::bezierPoint(double t, const POINT& alpha, const POINT& beta, const 
     p.y = alpha.y * t * t * t + beta.y * t * t + gamma.y * t + delta.y;
     return p;
 }
+
+void Utils::makeSquareWindow(int xleft, int xright, int ybottom, int ytop) {
+    Window window(xleft,xright,ybottom,ytop);
+}
+void Utils::makeRectangularWindow(int xleft, int xright, int ybottom, int ytop) {
+    Window window(xleft,xright,ybottom,ytop);
+}
+
 //========================\\

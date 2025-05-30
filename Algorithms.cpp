@@ -91,39 +91,21 @@ void Algorithms::drawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , in
 
 //bezier
 
-POINT bezierPoint(double t, const POINT& alpha, const POINT& beta, const POINT& gamma, const POINT& delta) {
-    POINT p;
-    p.x = alpha.x * t * t * t + beta.x * t * t + gamma.x * t + delta.x;
-    p.y = alpha.y * t * t * t + beta.y * t * t + gamma.y * t + delta.y;
-    return p;
-}
-
-void computeBezierCoefficients(const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3,
-                               POINT& alpha, POINT& beta, POINT& gamma, POINT& delta) {
-    delta = P0;
-    gamma.x = 3 * (P1.x - P0.x);
-    gamma.y = 3 * (P1.y - P0.y);
-    beta.x = 3 * (P2.x - 2 * P1.x + P0.x);
-    beta.y = 3 * (P2.y - 2 * P1.y + P0.y);
-    alpha.x = P3.x - P0.x - gamma.x - beta.x;
-    alpha.y = P3.y - P0.y - gamma.y - beta.y;
-}
-
-void drawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3) {
+void Algorithms::drawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3) {
     POINT alpha, beta, gamma, delta;
-    computeBezierCoefficients(P0, P1, P2, P3, alpha, beta, gamma, delta);
+    Utils::computeBezierCoefficients(P0, P1, P2, P3, alpha, beta, gamma, delta);
 
     const int steps = 1000;
     for (int i = 0; i <= steps; ++i) {
         double t = (double)i / steps;
-        POINT pt = bezierPoint(t, alpha, beta, gamma, delta);
+        POINT pt = Utils::bezierPoint(t, alpha, beta, gamma, delta);
         SetPixel(hdc, (int)pt.x, (int)pt.y, RGB(255, 0, 0)); // Red pixel
     }
 }
 
 
 //flood fill
-void FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) {
+void Algorithms::FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) {
     stack<POINT> s;
     s.push({ x, y });
 

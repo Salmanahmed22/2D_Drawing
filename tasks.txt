@@ -40,9 +40,9 @@ Ellipse Algorithms
 
 Clipping algorithms using Rectangle as Clipping Window to clip
 [Point,
- Line,
+ Line, (Done)
   Polygon]
 
 Clipping algorithms using Square as Clipping Window to clip
 [Point,
- Line]
+ Line (Done)]

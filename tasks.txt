@@ -25,7 +25,7 @@ Filling Circle with other circles after taking filling quarter from user
 Filling Square with Hermit Curve [Vertical]
 Filling Rectangle with Bezier Curve [horizontal]
 
-Convex ✅
+Convex  ✅
 and Non-Convex Filling Algorithm
 
 Recursive ✅

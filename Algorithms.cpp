@@ -334,14 +334,14 @@ void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c) {
 
 // convex filling algorithm
 void InitTable(Table t) {
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1000; ++i){
         t[i].xLeft = INT_MAX;
         t[i].xRight = INT_MIN;
     }
 }
 
 
-void edge2Table(POINT p1, POINT p2, Table t) {
+void edge2Table(POINT p1, POINT p2, Table t){
     if (p2.y == p1.y) return;
 
     if (p1.y > p2.y) swap(p1, p2);
@@ -359,7 +359,7 @@ void edge2Table(POINT p1, POINT p2, Table t) {
 }
 
 
-void polygonToTable(POINT p[], int n, Table t) {
+void polygonToTable(POINT p[], int n, Table t){
     POINT v1 = p[n - 1];
     for (int i = 0; i < n; ++i) {
         POINT v2 = p[i];
@@ -369,7 +369,7 @@ void polygonToTable(POINT p[], int n, Table t) {
 }
 
 
-void tableToScreen(HDC hdc, Table t, COLORREF c) {
+void tableToScreen(HDC hdc, Table t, COLORREF c){
     for (int y = 0; y < 1000; ++y) {
         if (t[y].xLeft < t[y].xRight) {
             for (int x = t[y].xLeft; x <= t[y].xRight; ++x) {
@@ -380,7 +380,7 @@ void tableToScreen(HDC hdc, Table t, COLORREF c) {
 }
 
 
-void convexFilling(HDC hdc, POINT p[], int n, COLORREF c) {
+void convexFilling(HDC hdc, POINT p[], int n, COLORREF c){
     Table t;
     InitTable(t);
     polygonToTable(p, n, t);

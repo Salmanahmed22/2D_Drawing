@@ -5,7 +5,7 @@ using namespace std;
 
 
 //Circle
-void Algorithms::DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
+void DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
     int x = 0, y = R;
     int d = 1 - R;
     int d1 = 3, d2 = 5 - 2 * R;
@@ -28,7 +28,7 @@ void Algorithms::DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLO
 
 
 //Ellipse
-void Algorithms::DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORREF c) {
+void DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORREF c) {
     // calc y from x from -a to a
     for (int x = -a; x <= a; x++) {
         double y = b * sqrt(1.0 - (double)(x * x) / (a * a));
@@ -47,7 +47,7 @@ void Algorithms::DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORR
 }
 
 //Line
-void Algorithms::InterpolatedColoredLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
+void InterpolatedColoredLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
     int alpha1 = x2 - x1, alpha2 = y2 - y1;
 
     float step = 1.0 / max(abs(alpha1),abs(alpha2));
@@ -62,7 +62,7 @@ void Algorithms::InterpolatedColoredLine(HDC hdc, int x1, int y1, int x2, int y2
 //Curves
 
 //hermite
-void Algorithms::drawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , int x2, int y2 , int u2, int v2, COLORREF c){
+void DrawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , int x2, int y2 , int u2, int v2, COLORREF c){
     int hermiteMatrix[4][4] = {
             { 2, -2,  1,  1 },
             {-3,  3, -2, -1 },
@@ -91,7 +91,7 @@ void Algorithms::drawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , in
 
 //bezier
 
-void Algorithms::drawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3) {
+void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3) {
     POINT alpha, beta, gamma, delta;
     Utils::computeBezierCoefficients(P0, P1, P2, P3, alpha, beta, gamma, delta);
 
@@ -105,7 +105,7 @@ void Algorithms::drawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, cons
 
 
 //flood fill
-void Algorithms::FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) {
+void FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) {
     stack<POINT> s;
     s.push({ x, y });
 
@@ -126,4 +126,37 @@ void Algorithms::FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF
     }
 }
 
+//Recursive Flood Fill
+void FloodFillRec(HDC hdc , int x ,int y , COLORREF borderColor, COLORREF fillColor) {
+    COLORREF c = GetPixel(hdc, x, y );
+    if (c==borderColor || c==fillColor) return;
+    SetPixel(hdc,x,y,fillColor);
+    FloodFillRec(hdc,x+1,y,borderColor,fillColor);
+    FloodFillRec(hdc,x-1,y,borderColor,fillColor);
+    FloodFillRec(hdc,x,y+1,borderColor,fillColor);
+    FloodFillRec(hdc,x,y-1,borderColor,fillColor);
+}
 
+//Cardinal Spline Curve
+struct Point2D{
+    double x, y;
+    Point2D(double x = 0.0, double y = 0.0):x(x),y(y){};
+};
+
+void DrawCardinalSpline(HDC hdc, Point2D P[], int n, double c, COLORREF color) {
+    if (n < 4) return;
+    double s = c/2.0;
+    for (int i = 1; i < n - 2; ++i) {
+        int T1x = (int)(s * (P[i + 1].x - P[i - 1].x));
+        int T1y = (int)(s * (P[i + 1].y - P[i - 1].y));
+        int T2x = (int)(s * (P[i + 2].x - P[i].x));
+        int T2y = (int)(s * (P[i + 2].y - P[i].y));
+
+        DrawHermiteCurve(
+            hdc,
+            (int)P[i].x, (int)P[i].y,T1x, T1y,
+            (int)P[i + 1].x, (int)P[i + 1].y,T2x, T2y,
+            color
+        );
+    }
+}

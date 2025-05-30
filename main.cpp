@@ -170,64 +170,153 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
     switch (msg) {
         case WM_COMMAND: {
             switch (LOWORD(wp)) {
-                case IDM_BG_WHITE:{
-                    hBackgroundBrush = (HBRUSH) GetStockObject(WHITE_BRUSH);
+                case IDM_BG_WHITE: {
+                    hBackgroundBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
                     InvalidateRect(hwnd, nullptr, TRUE);
                     break;
                 }
                 case IDM_BG_BLACK: {
-                    hBackgroundBrush = (HBRUSH) GetStockObject(BLACK_BRUSH);
+                    hBackgroundBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
                     InvalidateRect(hwnd, nullptr, TRUE);
                     break;
                 }
                 case IDM_CURSOR_ARROW: {
                     hCurrentCursor = LoadCursor(nullptr, IDC_ARROW);
-                    SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR) hCurrentCursor);
+                    SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR)hCurrentCursor);
                     SetCursor(hCurrentCursor);
                     break;
                 }
                 case IDM_CURSOR_CROSS: {
                     hCurrentCursor = LoadCursor(nullptr, IDC_CROSS);
-                    SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR) hCurrentCursor);
+                    SetClassLongPtr(hwnd, GCLP_HCURSOR, (LONG_PTR)hCurrentCursor);
                     SetCursor(hCurrentCursor);
                     break;
                 }
-                case IDM_SAVE:       // TODO: Implement Save
-                case IDM_LOAD:       // TODO: Implement Load
-                case IDM_LINE_DDA:   // TODO: Implement DDA Line
-                case IDM_LINE_MIDPOINT:
-                case IDM_LINE_PARAMETRIC:{
+
+                // File Operations
+                case IDM_SAVE: {
+                    currentOption = IDM_SAVE;  // Optional: assign currentOption for save/load too.
+                    break;
+                }
+                case IDM_LOAD: {
+                    currentOption = IDM_LOAD;
+                    break;
+                }
+
+                // line Drawing
+                case IDM_LINE_DDA: {
+                    currentOption = IDM_LINE_DDA;
+                    break;
+                }
+                case IDM_LINE_MIDPOINT: {
+                    currentOption = IDM_LINE_MIDPOINT;
+                    break;
+                }
+                case IDM_LINE_PARAMETRIC: {
                     currentOption = IDM_LINE_PARAMETRIC;
                     break;
                 }
-                case IDM_CIRCLE_DIRECT:
-                case IDM_CIRCLE_POLAR:
-                case IDM_CIRCLE_ITER_POLAR:
-                case IDM_CIRCLE_MIDPOINT:
+
+                // Circle Drawing
+                case IDM_CIRCLE_DIRECT: {
+                    currentOption = IDM_CIRCLE_DIRECT;
+                    break;
+                }
+                case IDM_CIRCLE_POLAR: {
+                    currentOption = IDM_CIRCLE_POLAR;
+                    break;
+                }
+                case IDM_CIRCLE_ITER_POLAR: {
+                    currentOption = IDM_CIRCLE_ITER_POLAR;
+                    break;
+                }
+                case IDM_CIRCLE_MIDPOINT: {
+                    currentOption = IDM_CIRCLE_MIDPOINT;
+                    break;
+                }
                 case IDM_CIRCLE_MOD_MID: {
                     currentOption = IDM_CIRCLE_MOD_MID;
                     break;
                 }
-                case IDM_FILL_CIRCLE_LINES:
-                case IDM_FILL_CIRCLE_CIRC:
-                case IDM_FILL_SQUARE_HERM:
-                case IDM_FILL_RECT_BEZIER:
-                case IDM_FILL_CONVEX:
-                case IDM_FILL_NONCONVEX:
-                case IDM_FLOOD_RECURSIVE:
-                case IDM_FLOOD_NONREC:
-                case IDM_CARDINAL_SPLINE:
-                case IDM_ELLIPSE_DIRECT:
-                case IDM_ELLIPSE_POLAR:
-                case IDM_ELLIPSE_MIDPOINT:
-                case IDM_CLIP_RECT_POINT:
-                case IDM_CLIP_RECT_LINE:
-                case IDM_CLIP_RECT_POLY:
-                case IDM_CLIP_SQUARE_POINT:
-                case IDM_CLIP_SQUARE_LINE:
-                    MessageBox(hwnd, "Functionality not implemented yet!", "TODO", MB_OK);
+
+                // Filling
+                case IDM_FILL_CIRCLE_LINES: {
+                    currentOption = IDM_FILL_CIRCLE_LINES;
                     break;
+                }
+                case IDM_FILL_CIRCLE_CIRC: {
+                    currentOption = IDM_FILL_CIRCLE_CIRC;
+                    break;
+                }
+                case IDM_FILL_SQUARE_HERM: {
+                    currentOption = IDM_FILL_SQUARE_HERM;
+                    break;
+                }
+                case IDM_FILL_RECT_BEZIER: {
+                    currentOption = IDM_FILL_RECT_BEZIER;
+                    break;
+                }
+                case IDM_FILL_CONVEX: {
+                    currentOption = IDM_FILL_CONVEX;
+                    break;
+                }
+                case IDM_FILL_NONCONVEX: {
+                    currentOption = IDM_FILL_NONCONVEX;
+                    break;
+                }
+                case IDM_FLOOD_RECURSIVE: {
+                    currentOption = IDM_FLOOD_RECURSIVE;
+                    break;
+                }
+                case IDM_FLOOD_NONREC: {
+                    currentOption = IDM_FLOOD_NONREC;
+                    break;
+                }
+
+                // Splines and Curves
+                case IDM_CARDINAL_SPLINE: {
+                    currentOption = IDM_CARDINAL_SPLINE;
+                    break;
+                }
+
+                // Ellipse
+                case IDM_ELLIPSE_DIRECT: {
+                    currentOption = IDM_ELLIPSE_DIRECT;
+                    break;
+                }
+                case IDM_ELLIPSE_POLAR: {
+                    currentOption = IDM_ELLIPSE_POLAR;
+                    break;
+                }
+                case IDM_ELLIPSE_MIDPOINT: {
+                    currentOption = IDM_ELLIPSE_MIDPOINT;
+                    break;
+                }
+
+                // Clipping
+                case IDM_CLIP_RECT_POINT: {
+                    currentOption = IDM_CLIP_RECT_POINT;
+                    break;
+                }
+                case IDM_CLIP_RECT_LINE: {
+                    currentOption = IDM_CLIP_RECT_LINE;
+                    break;
+                }
+                case IDM_CLIP_RECT_POLY: {
+                    currentOption = IDM_CLIP_RECT_POLY;
+                    break;
+                }
+                case IDM_CLIP_SQUARE_POINT: {
+                    currentOption = IDM_CLIP_SQUARE_POINT;
+                    break;
+                }
+                case IDM_CLIP_SQUARE_LINE: {
+                    currentOption = IDM_CLIP_SQUARE_LINE;
+                    break;
+                }
+
             }
+
             break;
         }
         case WM_LBUTTONDOWN:{

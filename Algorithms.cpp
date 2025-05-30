@@ -160,3 +160,69 @@ void DrawCardinalSpline(HDC hdc, Point2D P[], int n, double c, COLORREF color) {
         );
     }
 }
+
+//line clipping
+
+union outCode {
+    struct {
+        unsigned l:1, r:1, b:1, t:1;
+    };
+    unsigned all:4;
+};
+
+outCode getOutcode(POINT p, Window window) {
+    outCode res;
+    res.all = 0;
+    if (p.x < window.leftX) res.l = 1;
+    if (p.x > window.rightX) res.r = 1;
+    if (p.y < window.bottomY) res.b = 1;
+    if (p.y > window.topY) res.t = 1;
+    return res;
+}
+
+POINT Hintersect(double Xedge, POINT p1, POINT p2) {
+    POINT res;
+    res.x = Xedge;
+    res.y = (p2.y - p1.y) * (Xedge - p1.x) / (p2.x - p1.x) + p1.y;
+    return res;
+}
+
+POINT Vintersect(double Yedge, POINT p1, POINT p2) {
+    POINT res;
+    res.y = Yedge;
+    res.x = (p2.x - p1.x) * (Yedge - p1.y) / (p2.y - p1.y) + p1.x;
+    return res;
+}
+
+pair<bool, pair<POINT, POINT>> CohenSutherland(POINT p1, POINT p2, Window window) {
+    outCode out1 = getOutcode(p1, window);
+    outCode out2 = getOutcode(p2, window);
+    bool visible = false;
+
+    while (true) {
+        if (out1.all == 0 && out2.all == 0) {
+            visible = true;
+            break;
+        }
+        if ((out1.all & out2.all) != 0) {
+            break;
+        }
+
+        if (out1.all != 0) {
+            if (out1.l) p1 = Hintersect(window.leftX, p1, p2);
+            else if (out1.r) p1 = Hintersect(window.rightX, p1, p2);
+            else if (out1.b) p1 = Vintersect(window.bottomY, p1, p2);
+            else if (out1.t) p1 = Vintersect(window.topY, p1, p2);
+            out1 = getOutcode(p1, window);
+        } else {
+            if (out2.l) p2 = Hintersect(window.leftX, p1, p2);
+            else if (out2.r) p2 = Hintersect(window.rightX, p1, p2);
+            else if (out2.b) p2 = Vintersect(window.bottomY, p1, p2);
+            else if (out2.t) p2 = Vintersect(window.topY, p1, p2);
+            out2 = getOutcode(p2, window);
+        }
+    }
+
+    if (visible) return {true, {p1, p2}};
+    else return {false, {p1, p2}};
+}

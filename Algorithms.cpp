@@ -164,6 +164,53 @@ void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2,
     }
 }
 
+//Quarter circle line filling
+
+void FillQuarterLine(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c) {
+    int dx = px - xc;
+    int dy = py - yc;
+
+    if (dx * dx + dy * dy > r * r) return;
+
+    int quarter = -1;
+    if (dx >= 0 && dy <= 0) quarter = 1;     // Q1: Top-right
+    else if (dx <= 0 && dy <= 0) quarter = 2; // Q2: Top-left
+    else if (dx <= 0 && dy >= 0) quarter = 3; // Q3: Bottom-left
+    else if (dx >= 0 && dy >= 0) quarter = 4; // Q4: Bottom-right
+
+    for (int y = -r; y <= r; y++) {
+        int x_limit = static_cast<int>(sqrt(r * r - y * y));
+        int y_pos = yc + y;
+
+        switch (quarter) {
+            case 1:
+                if (y <= 0) {
+                    for (int x = 0; x <= x_limit; x++)
+                        SetPixel(hdc, xc + x, y_pos, c);
+                }
+                break;
+            case 2:
+                if (y <= 0) {
+                    for (int x = -x_limit; x <= 0; x++)
+                        SetPixel(hdc, xc + x, y_pos, c);
+                }
+                break;
+            case 3:
+                if (y >= 0) {
+                    for (int x = -x_limit; x <= 0; x++)
+                        SetPixel(hdc, xc + x, y_pos, c);
+                }
+                break;
+            case 4:
+                if (y >= 0) {
+                    for (int x = 0; x <= x_limit; x++)
+                        SetPixel(hdc, xc + x, y_pos, c);
+                }
+                break;
+        }
+    }
+}
+
 
 //flood fill
 void FloodFill(HDC hdc, int x, int y, COLORREF borderColor, COLORREF fillColor) {

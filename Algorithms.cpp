@@ -166,7 +166,7 @@ void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2,
 
 
 //flood fill
-void FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) {
+void FloodFill(HDC hdc, int x, int y, COLORREF borderColor, COLORREF fillColor) {
     stack<POINT> s;
     s.push({ x, y });
 
@@ -175,7 +175,7 @@ void FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor) 
         s.pop();
 
         COLORREF current = GetPixel(hdc, p.x, p.y);
-        if (current != targetColor || current == fillColor)
+        if (current == borderColor || current == fillColor)
             continue;
 
         SetPixel(hdc, p.x, p.y, fillColor);

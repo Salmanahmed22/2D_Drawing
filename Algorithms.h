@@ -17,4 +17,6 @@ void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c);
 void ConvexFill(HDC hdc, const vector<POINT>& p, COLORREF c);
 void DrawLineMidPoint(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c);
 void FillQuarterLine(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c);
+void FillQuarterWithCircles(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c);
+void DrawCircleBres(HDC hdc, int xc, int yc, int r, COLORREF c);
 

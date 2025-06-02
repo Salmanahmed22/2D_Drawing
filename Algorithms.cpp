@@ -10,6 +10,26 @@ struct TableEntry {
 typedef TableEntry Table[1000];
 
 //Circle
+
+//mid point circle
+void DrawCircleBres(HDC hdc, int xc, int yc, int r, COLORREF c) {
+    int x = 0, y = r;
+    int d = 1 - r;
+    Utils::Draw8Points(hdc, xc, yc, x, y, c);
+    while (x < y) {
+        if (d < 0) {
+            d += 2 * x + 3;
+        } else {
+            d += 2 * (x - y) + 5;
+            y--;
+        }
+        x++;
+        Utils::Draw8Points(hdc, xc, yc, x, y, c);
+    }
+}
+
+
+//modified mid point
 void DrawCircleModifiedMidpoint(HDC hdc, int xc, int yc, int R, COLORREF c) {
     int x = 0, y = R;
     int d = 1 - R;
@@ -210,6 +230,28 @@ void FillQuarterLine(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c)
         }
     }
 }
+
+
+// fill quarter circle with circles
+
+void FillQuarterWithCircles(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c) {
+    int dx = px - xc;
+    int dy = py - yc;
+
+    if (dx * dx + dy * dy > r * r)
+        return;
+
+    int quarter = -1;
+    if (dx >= 0 && dy <= 0) quarter = 1;
+    else if (dx <= 0 && dy <= 0) quarter = 2;
+    else if (dx <= 0 && dy >= 0) quarter = 3;
+    else if (dx >= 0 && dy >= 0) quarter = 4;
+
+    for (int r1 = r; r1 >= 1; r1--) {
+        Utils::DrawQuarterCircle(hdc, xc, yc, r1, quarter, c);
+    }
+}
+
 
 
 //flood fill

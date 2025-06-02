@@ -57,6 +57,46 @@ void Utils::makeRectangularWindow(int xleft, int xright, int ybottom, int ytop) 
     Window window(xleft,xright,ybottom,ytop);
 }
 
+void Draw2Points(HDC hdc, int xc, int yc, int x, int y, int quarter, COLORREF c) {
+    switch (quarter) {
+        case 1: // Top-right
+            SetPixel(hdc, xc + x, yc - y, c);
+            SetPixel(hdc, xc + y, yc - x, c);
+            break;
+        case 2: // Top-left
+            SetPixel(hdc, xc - x, yc - y, c);
+            SetPixel(hdc, xc - y, yc - x, c);
+            break;
+        case 3: // Bottom-left
+            SetPixel(hdc, xc - x, yc + y, c);
+            SetPixel(hdc, xc - y, yc + x, c);
+            break;
+        case 4: // Bottom-right
+            SetPixel(hdc, xc + x, yc + y, c);
+            SetPixel(hdc, xc + y, yc + x, c);
+            break;
+    }
+}
+
+void DrawQuarterCircle(HDC hdc, int xc, int yc, int r, int quarter, COLORREF c) {
+    int x = 0, y = r;
+    int d = 1 - r;
+    Draw2Points(hdc, xc, yc, x, y, quarter, c);
+
+    while (x < y) {
+        if (d < 0) {
+            d += 2 * x + 3;
+        } else {
+            d += 2 * (x - y) + 5;
+            y--;
+        }
+        x++;
+        Draw2Points(hdc, xc, yc, x, y, quarter, c);
+    }
+}
+
+
+
 
 
 //========================\\

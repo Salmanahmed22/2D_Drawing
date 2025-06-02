@@ -12,5 +12,7 @@ public:
     static POINT bezierPoint(double t, const POINT& alpha, const POINT& beta, const POINT& gamma, const POINT& delta);
     static void makeSquareWindow(int xleft,int xright, int ybottom, int ytop);
     static void makeRectangularWindow(int xleft,int xright, int ybottom, int ytop);
+    static void Draw2Points(HDC hdc, int xc, int yc, int x, int y, int quarter, COLORREF c);
+    static void DrawQuarterCircle(HDC hdc, int xc, int yc, int r, int quarter, COLORREF c);
 };
 

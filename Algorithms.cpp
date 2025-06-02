@@ -11,6 +11,54 @@ typedef TableEntry Table[1000];
 
 //Circle
 
+//direct circle
+void DrawCircle1(HDC hdc, int xc, int yc, int R, COLORREF c)
+{
+    int x = 0, y = R;
+    Utils::Draw8Points(hdc, xc, yc, x, y, c);
+
+    while (x < y)
+    {
+        x++;
+        y = Utils::Round(sqrt(R * R - x * x));
+        Utils::Draw8Points(hdc, xc, yc, x, y, c);
+    }
+}
+
+//polar circle
+void polarCircle(HDC hdc, int xc, int yc, int R, COLORREF c)
+{
+    int x = R, y = 0;
+    Utils::Draw8Points(hdc, xc, yc, x, y, c);
+
+    double theta = 0, dtheta = 1.0 / R;
+    while (x > y)
+    {
+        theta += dtheta;
+        x = Utils::Round(R * cos(theta));
+        y = Utils::Round(R * sin(theta));
+        Utils::Draw8Points(hdc, xc, yc, x, y, c);
+    }
+}
+
+// iterative polar circle
+void itiratvePolar(HDC hdc, int xc, int yc, int R, COLORREF c)
+{
+    double x = R, y = 0;
+    double dtheta = 1.0 / R;
+    double ct = cos(dtheta), st = sin(dtheta);
+    Utils::Draw8Points(hdc, xc, yc, R, 0, c);
+
+    while (x > y)
+    {
+        double x1 = x * ct - y * st;
+        y = x * st + y * ct;
+        x = x1;
+        Utils::Draw8Points(hdc, xc, yc, Utils::Round(x), Utils::Round(y), c);
+    }
+}
+
+
 //mid point circle
 void DrawCircleBres(HDC hdc, int xc, int yc, int r, COLORREF c) {
     int x = 0, y = r;

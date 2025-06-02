@@ -14,14 +14,14 @@ Implement line algorithms
   and parametric]  ✅
 
 Implement Circle algorithms
-[Direct,
- Polar,
-  iterative Polar,
-   midpoint
+[Direct,  ✅
+ Polar,   ✅
+  iterative Polar,   ✅
+   midpoint    ✅
     and modified Midpoint ✅]
 
-Filling Circle with lines after taking filling quarter from user
-Filling Circle with other circles after taking filling quarter from user
+Filling Circle with lines after taking filling quarter from user   ✅
+Filling Circle with other circles after taking filling quarter from user  ✅
 Filling Square with Hermit Curve [Vertical]
 Filling Rectangle with Bezier Curve [horizontal]
 

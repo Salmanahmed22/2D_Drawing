@@ -64,6 +64,62 @@ void drawParametricLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
     }
 }
 
+// mid point line
+void DrawLineMidPoint(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c)
+{
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    int x = x1;
+    int y = y1;
+
+    int sx = (x1 < x2) ? 1 : -1;
+    int sy = (y1 < y2) ? 1 : -1;
+
+    SetPixel(hdc, x, y, c);
+    if (dx > dy) // slope <= 1
+    {
+        int d = -2 * dy + dx;
+        int d1 = -2 * dy;
+        int d2 = 2 * (dx - dy);
+        while (x != x2)
+        {
+            if (d < 0)
+            {
+                d += d2;
+                x += sx;
+                y += sy;
+            }
+            else
+            {
+                d += d1;
+                x += sx;
+            }
+            SetPixel(hdc, x, y, c);
+        }
+    }
+    else // slope > 1
+    {
+        int d = -2 * dx + dy;
+        int d1 = -2 * dx;
+        int d2 = 2 * (dy - dx);
+        while (y != y2)
+        {
+            if (d < 0)
+            {
+                d += d2;
+                y += sy;
+                x += sx;
+            }
+            else
+            {
+                d += d1;
+                y += sy;
+            }
+            SetPixel(hdc, x, y, c);
+        }
+    }
+}
+
 //Curves
 
 //hermite
@@ -334,56 +390,53 @@ void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c) {
 
 // convex filling algorithm
 void InitTable(Table t) {
-    for (int i = 0; i < 1000; ++i){
+    for (int i = 0; i < 1000; ++i) {
         t[i].xLeft = INT_MAX;
         t[i].xRight = INT_MIN;
     }
 }
 
 
-void edge2Table(POINT p1, POINT p2, Table t){
+void edge2Table(POINT p1, POINT p2, Table t) {
     if (p2.y == p1.y) return;
-
     if (p1.y > p2.y) swap(p1, p2);
-
     double x = p1.x;
     int y = p1.y;
-    double mInv = static_cast<double>(p2.x - p1.x) / (p2.y - p1.y);
+    double mInv = (double)(p2.x - p1.x) / (p2.y - p1.y);
 
     while (y < p2.y) {
-        if (x < t[y].xLeft) t[y].xLeft = static_cast<int>(ceil(x));
-        if (x > t[y].xRight) t[y].xRight = static_cast<int>(floor(x));
-        x += mInv;
+        if (x < t[y].xLeft) t[y].xLeft = ceil(x);
+        if (x > t[y].xRight) t[y].xRight = floor(x);
         y++;
+        x += mInv;
     }
 }
 
 
-void polygonToTable(POINT p[], int n, Table t){
+void polygonToTable(POINT p[], int n, Table t) {
     POINT v1 = p[n - 1];
     for (int i = 0; i < n; ++i) {
         POINT v2 = p[i];
         edge2Table(v1, v2, t);
-        v1 = v2;
+        v1 = p[i];
     }
 }
 
 
-void tableToScreen(HDC hdc, Table t, COLORREF c){
-    for (int y = 0; y < 1000; ++y) {
-        if (t[y].xLeft < t[y].xRight) {
-            for (int x = t[y].xLeft; x <= t[y].xRight; ++x) {
-                SetPixel(hdc, x, y, c);
+void tableToScreen(HDC hdc, Table t, COLORREF c) {
+    for (int i = 0; i < 1000; ++i) {
+        if (t[i].xLeft < t[i].xRight) {
+            for (int x = t[i].xLeft; x <= t[i].xRight; ++x) {
+                SetPixel(hdc, x, i, c);
             }
         }
     }
 }
 
 
-void convexFilling(HDC hdc, POINT p[], int n, COLORREF c){
+void ConvexFill(HDC hdc, const vector<POINT>& p, COLORREF c) {
     Table t;
     InitTable(t);
-    polygonToTable(p, n, t);
+    polygonToTable((POINT*)&p[0], p.size(), t);
     tableToScreen(hdc, t, c);
 }
-

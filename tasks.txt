@@ -10,8 +10,8 @@ Implement load function to load data from files
 
 Implement line algorithms
 [DDA,
- Midpoint
-  and parametric]
+ Midpoint  ✅
+  and parametric]  ✅
 
 Implement Circle algorithms
 [Direct,

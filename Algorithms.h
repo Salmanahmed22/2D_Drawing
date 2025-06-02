@@ -14,4 +14,6 @@ void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2,
 void FloodFill(HDC hdc, int x, int y, COLORREF targetColor, COLORREF fillColor);
 void CohenSutherland(POINT p1, POINT p2, Window window);
 void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c);
+void ConvexFill(HDC hdc, const vector<POINT>& p, COLORREF c);
+void DrawLineMidPoint(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c);
 

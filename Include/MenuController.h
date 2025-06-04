@@ -10,6 +10,13 @@ using namespace std;
 #ifndef INC_2D_DRAWING_HANDLE_BUTTONS_H
 #define INC_2D_DRAWING_HANDLE_BUTTONS_H
 
+
+Vars vars;
+
+
+
+
+
 HMENU SetupMenus();
 void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);
 void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);

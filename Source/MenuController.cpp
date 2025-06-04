@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include "../Include/Circle.h"
 #include "../Include/Var&defines.h"
+#include "../Include/Clipping.h"
 using namespace std;
 
 HMENU SetupMenus() {
@@ -236,11 +237,20 @@ void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPA
             break;
         }
         case IDM_CLIP_RECT_LINE: {
+            hdc = GetDC(hwnd);
+
+            drawWindow(vars.rectangleWindow,hdc, RGB(0,0,0));
             vars.currentOption = IDM_CLIP_RECT_LINE;
             break;
         }
         case IDM_CLIP_RECT_POLY: {
+            int n;
+            cout<< "enter number of polygon vertices: ";
+            cin>> n;
+            hdc = GetDC(hwnd);
+            drawWindow(vars.rectangleWindow,hdc, RGB(0,0,0));
             vars.currentOption = IDM_CLIP_RECT_POLY;
+            vars.polygonPointsExpected = n;
             break;
         }
         case IDM_CLIP_SQUARE_POINT: {
@@ -248,6 +258,8 @@ void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPA
             break;
         }
         case IDM_CLIP_SQUARE_LINE: {
+            hdc = GetDC(hwnd);
+            drawWindow(vars.squareWindow,hdc, RGB(0,0,0));
             vars.currentOption = IDM_CLIP_SQUARE_LINE;
             break;
         }
@@ -266,6 +278,40 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             vars.yc = HIWORD(lp);
             break;
         }
+
+//        case IDM_CLIP_RECT_POINT:{
+//            vars.clipWindow;
+//        }
+        case IDM_CLIP_RECT_LINE:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            break;
+        }
+        case IDM_CLIP_RECT_POLY:{
+            int x = LOWORD(lp);
+            int y = HIWORD(lp);
+            POINT p = {x, y};
+            vars.polygonPoints.push_back(p);
+
+            hdc = GetDC(hwnd);
+            SetPixel(hdc, x, y, RGB(0, 0, 255)); // Visualize click
+            ReleaseDC(hwnd, hdc);
+
+            if (vars.polygonPoints.size() == vars.polygonPointsExpected) {
+                hdc = GetDC(hwnd);
+                polygonClipping(hdc, vars.polygonPoints, vars.rectangleWindow, vars.c);
+                vars.polygonPoints.clear();
+            }
+        }
+        case IDM_CLIP_SQUARE_LINE:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            break;
+        }
+        case IDM_CLIP_SQUARE_POINT:{}
+
+
+
         default:
             break;
     }
@@ -298,6 +344,30 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
                     break;
             }
             ReleaseDC(hwnd, hdc);
+            break;
+        }
+        case IDM_CLIP_RECT_LINE:{
+            hdc = GetDC(hwnd);
+            vars.x2 = LOWORD(lp);
+            vars.y2 = HIWORD(lp);
+            POINT p1,p2;
+            p1.x = vars.x1;
+            p1.y = vars.y1;
+            p2.x = vars.x2;
+            p2.y = vars.y2;
+            CohenSutherland(p1,p2,vars.rectangleWindow,hdc,vars.c);
+            break;
+        }
+        case IDM_CLIP_SQUARE_LINE:{
+            hdc = GetDC(hwnd);
+            vars.x2 = LOWORD(lp);
+            vars.y2 = HIWORD(lp);
+            POINT p1,p2;
+            p1.x = vars.x1;
+            p1.y = vars.y1;
+            p2.x = vars.x2;
+            p2.y = vars.y2;
+            CohenSutherland(p1,p2,vars.squareWindow,hdc,vars.c);
             break;
         }
         default:

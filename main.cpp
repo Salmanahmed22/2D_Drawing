@@ -6,7 +6,6 @@ using namespace std;
 HBRUSH hBackgroundBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
 HCURSOR hCurrentCursor = LoadCursor(NULL, IDC_ARROW);
 
-Vars vars;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp);
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <bits/stdc++.h>
+#include "Clipping.h"
 using namespace std;
 
 #ifndef VAR_DEFINES_H
@@ -60,6 +61,15 @@ struct Vars {
     int r = 0 , x = 0 , y = 0;
     vector<POINT> convexPoints , nonConvexPoints ;
 //    vector<Vector2> splinePoints;
+    Window squareWindow = Window(100, 500, 100, 500);
+    Window rectangleWindow = Window(100, 700, 100, 500);
+    vector<POINT> clipWindowPoints;
+    vector<POINT> currentLine;
+    vector<POINT> polygonPoints;
+    vector<pair<POINT, POINT>> clippedLines;
+    vector<POINT> clippedPolygon;
+    int polygonPointsExpected = 0;
+    int polygonPointsCollected = 0;
 };
 
 #endif //VAR_DEFINES_H

@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 outCode getOutcode(POINT p, Window window) {
     outCode res;
     res.all = 0;
@@ -30,7 +31,7 @@ POINT Vintersect(double Yedge, POINT p1, POINT p2) {
     return res;
 }
 
-void CohenSutherland(POINT p1, POINT p2, Window window,HDC hdc, COLORREF c) {
+void CohenSutherland(POINT p1, POINT p2, Window window,HDC hdc, COLORREF c){
     outCode out1 = getOutcode(p1, window);
     outCode out2 = getOutcode(p2, window);
     bool visible = false;
@@ -157,5 +158,16 @@ void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c) {
             DrawParametricLine(hdc, p1.x, p1.y, p2.x, p2.y, c);
             p1 = p2;
         }
+    }
+}
+
+void drawWindow(Window window, HDC hdc, COLORREF c){
+    for (int i = window.bottomY; i <= window.topY; ++i) {
+        SetPixel(hdc,window.leftX,i,c);
+        SetPixel(hdc,window.rightX,i,c);
+    }
+    for (int i = window.leftX; i <= window.rightX; ++i) {
+        SetPixel(hdc,i,window.topY,c);
+        SetPixel(hdc,i,window.bottomY,c);
     }
 }

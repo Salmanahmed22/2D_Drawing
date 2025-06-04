@@ -28,5 +28,5 @@ vector<POINT> rightClip(vector<POINT> ps, int Xright);
 vector<POINT> bottomClip(vector<POINT> ps, int Ybottom);
 vector<POINT> topClip(vector<POINT> ps, int Ytop);
 void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c);
-
+void drawWindow(Window window, HDC hdc, COLORREF c);
 #endif //INC_2D_DRAWING_CLIPPING_H

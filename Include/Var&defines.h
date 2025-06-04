@@ -66,10 +66,7 @@ struct Vars {
     vector<POINT> clipWindowPoints;
     vector<POINT> currentLine;
     vector<POINT> polygonPoints;
-    vector<pair<POINT, POINT>> clippedLines;
-    vector<POINT> clippedPolygon;
     int polygonPointsExpected = 0;
-    int polygonPointsCollected = 0;
 };
 
 #endif //VAR_DEFINES_H

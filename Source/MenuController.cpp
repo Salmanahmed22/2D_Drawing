@@ -233,12 +233,13 @@ void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPA
 
             // Clipping
         case IDM_CLIP_RECT_POINT: {
+            hdc = GetDC(hwnd);
+            drawWindow(vars.rectangleWindow,hdc, RGB(0,0,0));
             vars.currentOption = IDM_CLIP_RECT_POINT;
             break;
         }
         case IDM_CLIP_RECT_LINE: {
             hdc = GetDC(hwnd);
-
             drawWindow(vars.rectangleWindow,hdc, RGB(0,0,0));
             vars.currentOption = IDM_CLIP_RECT_LINE;
             break;
@@ -254,6 +255,8 @@ void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPA
             break;
         }
         case IDM_CLIP_SQUARE_POINT: {
+            hdc = GetDC(hwnd);
+            drawWindow(vars.squareWindow,hdc, RGB(0,0,0));
             vars.currentOption = IDM_CLIP_SQUARE_POINT;
             break;
         }
@@ -290,6 +293,10 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
         case IDM_CLIP_RECT_POLY:{
             int x = LOWORD(lp);
             int y = HIWORD(lp);
+            hdc = GetDC(hwnd);
+            // Draw a small dot for visual feedback
+            Ellipse(hdc, x - 3, y - 3, x + 3, y + 3);
+            ReleaseDC(hwnd, hdc);
             POINT p = {x, y};
             vars.polygonPoints.push_back(p);
 
@@ -303,12 +310,35 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
                 vars.polygonPoints.clear();
             }
         }
+        case IDM_CLIP_RECT_POINT:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            POINT p1;
+            p1.x = vars.x1;
+            p1.y = vars.y1;
+            if (pointClipping(p1,vars.rectangleWindow)){
+
+            }
+            break;
+        }
         case IDM_CLIP_SQUARE_LINE:{
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);
             break;
         }
-        case IDM_CLIP_SQUARE_POINT:{}
+        case IDM_CLIP_SQUARE_POINT:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            POINT p1;
+            p1.x = vars.x1;
+            p1.y = vars.y1;
+            if (pointClipping(p1,vars.squareWindow)){
+                hdc = GetDC(hwnd);
+                Ellipse(hdc, p1.x - 3, p1.y - 3, p1.x + 3, p1.y + 3);
+                ReleaseDC(hwnd, hdc);
+            }
+            break;
+        }
 
 
 

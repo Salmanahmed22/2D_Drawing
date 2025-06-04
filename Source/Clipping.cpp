@@ -171,3 +171,7 @@ void drawWindow(Window window, HDC hdc, COLORREF c){
         SetPixel(hdc,i,window.bottomY,c);
     }
 }
+
+bool pointClipping(POINT p, Window window){
+    return (p.x >= window.leftX and p.x <= window.rightX and p.y >= window.bottomY and p.y <= window.topY);
+}

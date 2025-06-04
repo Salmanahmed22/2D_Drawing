@@ -39,10 +39,10 @@ Ellipse Algorithms
  and midpoint]
 
 Clipping algorithms using Rectangle as Clipping Window to clip
-[Point,
+[Point,✅
  Line, ✅
   Polygon ✅]
 
 Clipping algorithms using Square as Clipping Window to clip
-[Point,
+[Point,✅
  Line ✅]

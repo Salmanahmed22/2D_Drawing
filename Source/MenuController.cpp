@@ -3,6 +3,7 @@
 #include "../Include/Circle.h"
 #include "../Include/Var&defines.h"
 #include "../Include/Clipping.h"
+#include "../Include/Filling.h"
 using namespace std;
 
 HMENU SetupMenus() {
@@ -339,6 +340,27 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             }
             break;
         }
+        case IDM_FLOOD_NONREC: {
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            hdc = GetDC(hwnd);
+            FloodFill(hdc,vars.x1,vars.y1, vars.c,vars.c);
+            break;
+        }
+        case IDM_FILL_CIRCLE_LINES: {
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            hdc = GetDC(hwnd);
+            FillQuarterLine(hdc,vars.xc,vars.yc,vars.r,vars.x1,vars.y1,vars.c);
+            break;
+        }
+        case IDM_FILL_CIRCLE_CIRC: {
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            hdc = GetDC(hwnd);
+            FillQuarterWithCircles(hdc,vars.xc,vars.yc,vars.r,vars.x1,vars.y1,vars.c);
+            break;
+        }
 
 
 
@@ -354,20 +376,29 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
         case IDM_CIRCLE_MIDPOINT:
         case IDM_CIRCLE_MOD_MID: {
             hdc = GetDC(hwnd);
-            int x, y, r;
+            int x, y;
             x = LOWORD(lp);
             y = HIWORD(lp);
-            r = static_cast<int>(sqrt((x - vars.xc) * (x - vars.xc) + (y - vars.yc) * (y - vars.yc)));
+            vars.r = static_cast<int>(sqrt((x - vars.xc) * (x - vars.xc) + (y - vars.yc) * (y - vars.yc)));
             switch (vars.currentOption) {
                 case IDM_CIRCLE_DIRECT: {
-                    DrawCircleDirect(hdc, vars.xc, vars.yc, r, vars.c);
+                    DrawCircleDirect(hdc, vars.xc, vars.yc, vars.r, vars.c);
                     break;
                 }
-                case IDM_CIRCLE_POLAR:
-                case IDM_CIRCLE_ITER_POLAR:
-                case IDM_CIRCLE_MIDPOINT:
+                case IDM_CIRCLE_POLAR:{
+                    DrawCirclePolar(hdc, vars.xc, vars.yc, vars.r, vars.c);
+                    break;
+                }
+                case IDM_CIRCLE_ITER_POLAR:{
+                    DrawCircleIterativePolar(hdc, vars.xc, vars.yc, vars.r, vars.c);
+                    break;
+                }
+                case IDM_CIRCLE_MIDPOINT:{
+                    DrawCircleBresenham(hdc, vars.xc, vars.yc, vars.r, vars.c);
+                    break;
+                }
                 case IDM_CIRCLE_MOD_MID: {
-                    DrawCircleModifiedMidpoint(hdc, vars.xc, vars.yc, r, vars.c);
+                    DrawCircleModifiedMidpoint(hdc, vars.xc, vars.yc, vars.r, vars.c);
                     break;
                 }
                 default:

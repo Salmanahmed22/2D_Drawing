@@ -5,5 +5,11 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(2D_Drawing
         main.cpp
-        Utils.cpp
-        Algorithms.cpp)
+        Source/Utils.cpp
+        Source/Circle.cpp
+        Source/Clipping.cpp
+        Source/MenuController.cpp
+        Source/Line.cpp
+        Source/Ellipse.cpp
+        Source/Filling.cpp
+        Source/Curves.cpp)

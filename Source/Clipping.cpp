@@ -62,7 +62,7 @@ void CohenSutherland(POINT p1, POINT p2, Window window,HDC hdc, COLORREF c){
 
 //    if (visible) return {true, {p1, p2}};
 //    else return {false, {p1, p2}};
-    if (visible) DrawParametricLine(hdc, p1.x, p1.y, p2.x, p2.y, c);
+    if (visible) DrawLineParametric(hdc, p1.x, p1.y, p2.x, p2.y, c);
 }
 
 vector<POINT> leftClip(vector<POINT> ps, int Xleft) {
@@ -155,7 +155,7 @@ void polygonClipping(HDC hdc, vector<POINT> ps, Window window, COLORREF c) {
         POINT p1 = res[res.size() - 1];
         for (int i = 0; i < res.size(); ++i) {
             POINT p2 = res[i];
-            DrawParametricLine(hdc, p1.x, p1.y, p2.x, p2.y, c);
+            DrawLineParametric(hdc, p1.x, p1.y, p2.x, p2.y, c);
             p1 = p2;
         }
     }

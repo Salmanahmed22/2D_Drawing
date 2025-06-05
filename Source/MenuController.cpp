@@ -4,6 +4,7 @@
 #include "../Include/Var&defines.h"
 #include "../Include/Clipping.h"
 #include "../Include/Filling.h"
+#include "../Include/Line.h"
 using namespace std;
 
 HMENU SetupMenus() {
@@ -273,6 +274,7 @@ void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPA
 
 void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){
     switch (vars.currentOption) {
+        //circle
         case IDM_CIRCLE_DIRECT:
         case IDM_CIRCLE_POLAR:
         case IDM_CIRCLE_ITER_POLAR:
@@ -282,10 +284,7 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             vars.yc = HIWORD(lp);
             break;
         }
-
-//        case IDM_CLIP_RECT_POINT:{
-//            vars.clipWindow;
-//        }
+        //clipping
         case IDM_CLIP_RECT_LINE:{
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);
@@ -340,6 +339,8 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             }
             break;
         }
+
+        //filling
         case IDM_FLOOD_NONREC: {
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);
@@ -368,7 +369,17 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             ReleaseDC(hwnd, hdc);
             break;
         }
-
+        //line
+        case  IDM_LINE_PARAMETRIC:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            break;
+        }
+        case  IDM_LINE_MIDPOINT:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            break;
+        }
 
 
         default:
@@ -414,6 +425,7 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             ReleaseDC(hwnd, hdc);
             break;
         }
+
         case IDM_CLIP_RECT_LINE:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
@@ -437,6 +449,19 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             p2.y = vars.y2;
             CohenSutherland(p1,p2,vars.squareWindow,hdc,vars.c);
             break;
+        }
+
+        case IDM_LINE_MIDPOINT:{
+            hdc = GetDC(hwnd);
+            vars.x2 = LOWORD(lp);
+            vars.y2 = HIWORD(lp);
+            DrawLineMidPoint(hdc,vars.x1,vars.y1,vars.x2,vars.y2,vars.c);
+        }
+        case IDM_LINE_PARAMETRIC:{
+            hdc = GetDC(hwnd);
+            vars.x2 = LOWORD(lp);
+            vars.y2 = HIWORD(lp);
+            DrawLineParametric(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
         }
         default:
             break;

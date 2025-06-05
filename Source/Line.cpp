@@ -4,7 +4,7 @@
 
 using namespace std;
 
-void DrawParametricLine(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
+void DrawLineParametric(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c) {
     int alpha1 = x2 - x1, alpha2 = y2 - y1;
 
     float step = 1.0 / max(abs(alpha1),abs(alpha2));

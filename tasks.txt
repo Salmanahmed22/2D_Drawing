@@ -31,7 +31,7 @@ and Non-Convex Filling Algorithm
 Recursive ✅
 and Non-Recursive Flood Fill ✅
 
-Cardinal Spline Curve
+Cardinal Spline Curve ✅
 
 Ellipse Algorithms
 [Direct ✅,

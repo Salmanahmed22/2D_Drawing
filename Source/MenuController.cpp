@@ -5,6 +5,7 @@
 #include "../Include/Clipping.h"
 #include "../Include/Filling.h"
 #include "../Include/Line.h"
+#include "../Include/Ellipse.h"
 using namespace std;
 
 HMENU SetupMenus() {
@@ -386,7 +387,13 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             vars.y1 = HIWORD(lp);
             break;
         }
-
+        //ellipse
+        case IDM_ELLIPSE_DIRECT:{
+            // Save center of ellipse
+            vars.xc = LOWORD(lp);
+            vars.yc = HIWORD(lp);
+            break;
+        }
 
         default:
             break;
@@ -474,6 +481,16 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineDDA(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
+        }
+
+        case IDM_ELLIPSE_DIRECT:{
+            hdc = GetDC(hwnd);
+            int x, y;
+            x = LOWORD(lp);
+            y = HIWORD(lp);
+            int a = abs(x - vars.xc); // Horizontal radius
+            int b = abs(y - vars.yc); // Vertical radius
+            DrawEllipseDirect(hdc, vars.xc, vars.yc, a, b, vars.c);
         }
         default:
             break;

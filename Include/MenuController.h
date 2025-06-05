@@ -10,10 +10,6 @@ using namespace std;
 
 Vars vars;
 
-
-
-
-
 HMENU SetupMenus();
 void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);
 void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);

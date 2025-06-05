@@ -50,6 +50,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             HandleLeftButtonDOWN(hwnd, wp, lp, hdc, vars);
             break;
         }
+        case WM_RBUTTONDOWN:{
+            HandleRightButtonDOWN(hwnd, wp, lp, hdc, vars);
+            break;
+        }
         case WM_LBUTTONUP:{
             HandleLeftButtonUP(hwnd, wp, lp, hdc, vars);
             break;

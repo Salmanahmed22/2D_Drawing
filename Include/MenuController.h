@@ -1,6 +1,3 @@
-//
-// Created by Abdelrahman on 6/4/2025.
-//
 #include <Windows.h>
 #include <bits/stdc++.h>
 #include "Var&defines.h"

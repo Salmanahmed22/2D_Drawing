@@ -361,6 +361,13 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             FillQuarterWithCircles(hdc,vars.xc,vars.yc,vars.r,vars.x1,vars.y1,vars.c);
             break;
         }
+        case IDM_FILL_CONVEX:{
+            vars.convexPoints.push_back({LOWORD(lp), HIWORD(lp)});
+            hdc = GetDC(hwnd);
+            SetPixel(hdc, vars.convexPoints.back().x, vars.convexPoints.back().y, vars.c);
+            ReleaseDC(hwnd, hdc);
+            break;
+        }
 
 
 
@@ -435,5 +442,19 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             break;
     }
 }
-void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){}
+
+void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){
+    switch (vars.currentOption){
+        case IDM_FILL_CONVEX:{
+            if (vars.convexPoints.size() < 3) break;
+            hdc = GetDC(hwnd);
+            ConvexFill(hdc, vars.convexPoints, vars.c);
+            ReleaseDC(hwnd, hdc);
+            vars.convexPoints.clear();
+            break;
+        }
+        default:
+            break;
+    }
+}
 

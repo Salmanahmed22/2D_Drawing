@@ -7,5 +7,8 @@ using namespace std;
 #define INC_2D_DRAWING_ELLIPSE_H
 
 void DrawEllipseDirect(HDC hdc, int xc, int yc, int a, int b, COLORREF c);
+void DrawEllipsePolar(HDC hdc, int xc, int yc, int a, int b, COLORREF c);
+void DrawEllipseMidpoint(HDC hdc, int xc, int yc, int a, int b, COLORREF c);
+
 
 #endif //INC_2D_DRAWING_ELLIPSE_H

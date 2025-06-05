@@ -9,7 +9,7 @@ Implement save function for all data in screen
 Implement load function to load data from files
 
 Implement line algorithms
-[DDA,
+[DDA, ✅
  Midpoint  ✅
   and parametric]  ✅
 
@@ -34,14 +34,14 @@ and Non-Recursive Flood Fill ✅
 Cardinal Spline Curve ✅
 
 Ellipse Algorithms
-[Direct ✅,
- polar
- and midpoint]
+[Direct   ✅
+ polar    ✅
+ midpoint ✅]
 
 Clipping algorithms using Rectangle as Clipping Window to clip
-[Point,✅
- Line, ✅
-  Polygon ✅]
+[Point  ✅
+ Line   ✅
+ Polygon✅]
 
 Clipping algorithms using Square as Clipping Window to clip
 [Point,✅

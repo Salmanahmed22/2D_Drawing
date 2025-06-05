@@ -394,6 +394,16 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             vars.yc = HIWORD(lp);
             break;
         }
+        case IDM_ELLIPSE_POLAR:{
+            vars.xc = LOWORD(lp);
+            vars.yc = HIWORD(lp);
+            break;
+        }
+        case IDM_ELLIPSE_MIDPOINT:{
+            vars.xc = LOWORD(lp);
+            vars.yc = HIWORD(lp);
+            break;
+        }
 
         default:
             break;
@@ -491,6 +501,23 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc); // Horizontal radius
             int b = abs(y - vars.yc); // Vertical radius
             DrawEllipseDirect(hdc, vars.xc, vars.yc, a, b, vars.c);
+        }
+        case IDM_ELLIPSE_POLAR:{
+            hdc = GetDC(hwnd);
+            int x, y;
+            x = LOWORD(lp);
+            y = HIWORD(lp);
+            int a = abs(x - vars.xc);
+            int b = abs(y - vars.yc);
+            DrawEllipsePolar(hdc, vars.xc, vars.yc, a, b, vars.c);
+        }case IDM_ELLIPSE_MIDPOINT:{
+            hdc = GetDC(hwnd);
+            int x, y;
+            x = LOWORD(lp);
+            y = HIWORD(lp);
+            int a = abs(x - vars.xc);
+            int b = abs(y - vars.yc);
+            DrawEllipseMidpoint(hdc, vars.xc, vars.yc, a, b, vars.c);
         }
         default:
             break;

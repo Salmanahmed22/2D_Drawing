@@ -70,3 +70,41 @@ void DrawLineMidPoint(HDC hdc, int x1, int y1, int x2, int y2, COLORREF c)
         }
     }
 }
+
+void DrawLineDDA(HDC hdc, int x1, int y1, int x2, int y2, COLORREF color)
+{
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+    SetPixel(hdc, x1, y1, color);
+
+    if (abs(dx) >= abs(dy))
+    {
+        double m = (double)dy / dx;
+        if (x1 > x2)
+        {
+            swap(x1, x2);
+            swap(y1, y2);
+        }
+        double y = y1;
+        for (int x = x1; x <= x2; x++)
+        {
+            y += m;
+            SetPixel(hdc, x, Round(y), color);
+        }
+    }
+    else
+    {
+        double mi = (double)dx / dy;
+        if (y1 > y2)
+        {
+            swap(x1, x2);
+            swap(y1, y2);
+        }
+        double x = x1;
+        for (int y = y1; y <= y2; y++)
+        {
+            x += mi;
+            SetPixel(hdc, Round(x), y, color);
+        }
+    }
+}

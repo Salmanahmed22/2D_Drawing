@@ -369,6 +369,7 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             ReleaseDC(hwnd, hdc);
             break;
         }
+        case IDM_FLOOD_RECURSIVE:{}
         //line
         case  IDM_LINE_PARAMETRIC:{
             vars.x1 = LOWORD(lp);
@@ -376,6 +377,11 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             break;
         }
         case  IDM_LINE_MIDPOINT:{
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            break;
+        }
+        case  IDM_LINE_DDA:{
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);
             break;
@@ -462,6 +468,12 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineParametric(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
+        }
+        case IDM_LINE_DDA:{
+            hdc = GetDC(hwnd);
+            vars.x2 = LOWORD(lp);
+            vars.y2 = HIWORD(lp);
+            DrawLineDDA(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
         }
         default:
             break;

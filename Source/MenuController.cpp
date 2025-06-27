@@ -363,10 +363,17 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             FillQuarterWithCircles(hdc,vars.xc,vars.yc,vars.r,vars.x1,vars.y1,vars.c);
             break;
         }
-        case IDM_FILL_CONVEX:{
-            vars.convexPoints.push_back({LOWORD(lp), HIWORD(lp)});
+        case IDM_FILL_CONVEX:
+        case IDM_FILL_NONCONVEX:{
+            int x = LOWORD(lp);
+            int y = HIWORD(lp);
+            POINT pt = {x, y};
+            if(vars.currentOption == IDM_FILL_CONVEX)
+                vars.convexPoints.push_back(pt);
+            else if(vars.currentOption == IDM_FILL_NONCONVEX)
+                vars.nonConvexPoints.push_back(pt);
             hdc = GetDC(hwnd);
-            SetPixel(hdc, vars.convexPoints.back().x, vars.convexPoints.back().y, vars.c);
+            Ellipse(hdc, x - 3, y - 3, x + 3, y + 3);
             ReleaseDC(hwnd, hdc);
             break;
         }
@@ -523,6 +530,15 @@ void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &va
             ConvexFill(hdc, vars.convexPoints, vars.c);
             ReleaseDC(hwnd, hdc);
             vars.convexPoints.clear();
+            break;
+        }
+        case IDM_FILL_NONCONVEX:{
+            if(vars.nonConvexPoints.size() >= 3){
+                hdc = GetDC(hwnd);
+                GeneralFill(hdc, vars.nonConvexPoints, vars.c);
+                ReleaseDC(hwnd, hdc);
+                vars.nonConvexPoints.clear();
+            }
             break;
         }
         default:

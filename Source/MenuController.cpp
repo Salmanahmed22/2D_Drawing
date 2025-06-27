@@ -6,6 +6,7 @@
 #include "../Include/Filling.h"
 #include "../Include/Line.h"
 #include "../Include/Ellipse.h"
+#include "../Include/Utils.h"
 using namespace std;
 
 HMENU SetupMenus() {
@@ -136,12 +137,16 @@ void HandleChoice(HBRUSH &hBackgroundBrush, HCURSOR &hCurrentCursor,HWND hwnd, W
         case IDM_COLOR_INDIGO: vars.c = RGB(75, 0, 130); break;
         case IDM_COLOR_VIOLET: vars.c = RGB(238, 130, 238); break;
 
+        case IDM_CLEAR: {
+            InvalidateRect(hwnd, nullptr, TRUE);
+            break;
+        }
         case IDM_SAVE: {
-            vars.currentOption = IDM_SAVE;
+            saveBoard(hwnd, hdc);
             break;
         }
         case IDM_LOAD: {
-            vars.currentOption = IDM_LOAD;
+            loadBoard(hwnd, hdc);
             break;
         }
 

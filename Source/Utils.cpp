@@ -1,5 +1,6 @@
 #include "windows.h"
 #include <bits/stdc++.h>
+#include <tchar.h>
 #include "../Include/Utils.h"
 #include "../Include/Clipping.h"
 using namespace std;
@@ -93,6 +94,123 @@ void DrawQuarterCircle(HDC hdc, int xc, int yc, int r, int quarter, COLORREF c) 
         x++;
         Draw2Points(hdc, xc, yc, x, y, quarter, c);
     }
+}
+
+void saveBoard(HWND hwnd, HDC hdc){
+//    RECT rc;
+//    GetClientRect(hwnd, &rc);
+//    int width = rc.right - rc.left;
+//    int height = rc.bottom - rc.top;
+//
+//    // Create a compatible DC and bitmap
+//    HDC hdcMem = CreateCompatibleDC(hdc);
+//    HBITMAP hBitmap = CreateCompatibleBitmap(hdc, width, height);
+//    HBITMAP hOldBitmap = (HBITMAP)SelectObject(hdcMem, hBitmap);
+//
+//    // Copy the client area to the bitmap
+//    BitBlt(hdcMem, 0, 0, width, height, hdc, 0, 0, SRCCOPY);
+//
+//    // Prepare the save file dialog
+//    OPENFILENAME ofn;
+//    TCHAR szFile[MAX_PATH] = {0};
+//
+//    ZeroMemory(&ofn, sizeof(ofn));
+//    ofn.lStructSize = sizeof(ofn);
+//    ofn.hwndOwner = hwnd;
+//    ofn.lpstrFile = szFile;
+//    ofn.nMaxFile = sizeof(szFile);
+//    ofn.lpstrFilter = _T("Bitmap Files (*.bmp)\0*.bmp\0All Files (*.*)\0*.*\0");
+//    ofn.nFilterIndex = 1;
+//    ofn.lpstrDefExt = _T("bmp");
+//    ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+//
+//    if (GetSaveFileName(&ofn)) {
+//        // Save the bitmap to file
+//        BITMAPFILEHEADER bmfHeader;
+//        BITMAPINFOHEADER bi;
+//
+//        bi.biSize = sizeof(BITMAPINFOHEADER);
+//        bi.biWidth = width;
+//        bi.biHeight = height;
+//        bi.biPlanes = 1;
+//        bi.biBitCount = 24;
+//        bi.biCompression = BI_RGB;
+//        bi.biSizeImage = 0;
+//        bi.biXPelsPerMeter = 0;
+//        bi.biYPelsPerMeter = 0;
+//        bi.biClrUsed = 0;
+//        bi.biClrImportant = 0;
+//
+//        DWORD dwBmpSize = ((width * bi.biBitCount + 31) / 32) * 4 * height;
+//        HANDLE hDIB = GlobalAlloc(GHND, dwBmpSize);
+//        char* lpbitmap = (char*)GlobalLock(hDIB);
+//
+//        GetDIBits(hdcMem, hBitmap, 0, height, lpbitmap, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+//
+//        HANDLE hFile = CreateFile(ofn.lpstrFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+//
+//        DWORD dwSizeofDIB = dwBmpSize + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+//        bmfHeader.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
+//        bmfHeader.bfSize = dwSizeofDIB;
+//        bmfHeader.bfType = 0x4D42; // "BM"
+//
+//        DWORD dwBytesWritten = 0;
+//        WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwBytesWritten, NULL);
+//        WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwBytesWritten, NULL);
+//        WriteFile(hFile, (LPSTR)lpbitmap, dwBmpSize, &dwBytesWritten, NULL);
+//
+//        GlobalUnlock(hDIB);
+//        GlobalFree(hDIB);
+//        CloseHandle(hFile);
+//    }
+//
+//    // Clean up
+//    SelectObject(hdcMem, hOldBitmap);
+//    DeleteDC(hdcMem);
+//    DeleteObject(hBitmap);
+
+}
+
+void loadBoard(HWND hwnd, HDC hdc){
+//    OPENFILENAME ofn;
+//    TCHAR szFile[MAX_PATH] = {0};
+//
+//    ZeroMemory(&ofn, sizeof(ofn));
+//    ofn.lStructSize = sizeof(ofn);
+//    ofn.hwndOwner = hwnd;
+//    ofn.lpstrFile = szFile;
+//    ofn.nMaxFile = sizeof(szFile);
+//    ofn.lpstrFilter = _T("Bitmap Files (*.bmp)\0*.bmp\0All Files (*.*)\0*.*\0");
+//    ofn.nFilterIndex = 1;
+//    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+//
+//    if (GetOpenFileName(&ofn)) {
+//        HBITMAP hBitmap = (HBITMAP)LoadImage(NULL, ofn.lpstrFile, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+//
+//        if (hBitmap) {
+//            // Get the bitmap dimensions
+//            BITMAP bm;
+//            GetObject(hBitmap, sizeof(BITMAP), &bm);
+//
+//            // Create a memory DC
+//            HDC hdcMem = CreateCompatibleDC(hdc);
+//            HBITMAP hOldBitmap = (HBITMAP)SelectObject(hdcMem, hBitmap);
+//
+//            // Draw the loaded bitmap to the window
+//            RECT rc;
+//            GetClientRect(hwnd, &rc);
+//            BitBlt(hdc, 0, 0, rc.right, rc.bottom, hdcMem, 0, 0, SRCCOPY);
+//
+//            // Clean up
+//            SelectObject(hdcMem, hOldBitmap);
+//            DeleteDC(hdcMem);
+//            DeleteObject(hBitmap);
+//
+//            InvalidateRect(hwnd, NULL, TRUE);
+//        } else {
+//            MessageBox(hwnd, _T("Failed to load image"), _T("Error"), MB_OK | MB_ICONERROR);
+//        }
+//    }
 }
 
 //========================\\

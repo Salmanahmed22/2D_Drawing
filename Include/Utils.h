@@ -14,4 +14,7 @@ void makeRectangularWindow(int xleft,int xright, int ybottom, int ytop);
 void Draw2Points(HDC hdc, int xc, int yc, int x, int y, int quarter, COLORREF c);
 void DrawQuarterCircle(HDC hdc, int xc, int yc, int r, int quarter, COLORREF c);
 
+void saveBoard(HWND hwnd, HDC hdc);
+void loadBoard(HWND hwnd, HDC hdc);
+
 

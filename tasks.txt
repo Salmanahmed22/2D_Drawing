@@ -3,7 +3,7 @@ Change the background of window to be white
 Try to change the shape of your window mouse
 User must interact with window using mouse only
 Try to make combination between your console and window
-Give users the option to choose shape color before drawing from menu
+Give users the option to choose shape color before drawing from menu ✅
 Implement item to clear screen from shapes
 Implement save function for all data in screen
 Implement load function to load data from files

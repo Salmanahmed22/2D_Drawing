@@ -65,6 +65,14 @@ struct Vars {
     vector<POINT> clipWindowPoints;
     vector<POINT> currentLine;
     vector<POINT> polygonPoints;
+    int clickCount = 0;
+    POINT squareTopLeft;
+    POINT squareBottomRight;
+    POINT tangentClickTop;
+    POINT tangentClickBottom;
+    int squareSize = 0;
+    POINT R0,R1;
+    bool readyToDraw = false;
     int polygonPointsExpected = 0;
 };
 

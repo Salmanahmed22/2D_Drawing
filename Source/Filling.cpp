@@ -145,3 +145,25 @@ void FloodFillRec(HDC hdc , int x ,int y , COLORREF borderColor, COLORREF fillCo
     FloodFillRec(hdc,x,y+1,borderColor,fillColor);
     FloodFillRec(hdc,x,y-1,borderColor,fillColor);
 }
+
+float H1(float t) { return 2 * t * t * t - 3 * t * t + 1; }
+float H2(float t) { return -2 * t * t * t + 3 * t * t; }
+float H3(float t) { return t * t * t - 2 * t * t + t; }
+float H4(float t) { return t * t * t - t * t; }
+
+void DrawHermite(HDC hdc, POINT P0, POINT P1, POINT R0, POINT R1, COLORREF color) {
+    for (float t = 0; t <= 1.0f; t += 0.001f) {
+        float x = H1(t) * P0.x + H2(t) * P1.x + H3(t) * R0.x + H4(t) * R1.x;
+        float y = H1(t) * P0.y + H2(t) * P1.y + H3(t) * R0.y + H4(t) * R1.y;
+        SetPixel(hdc, static_cast<int>(x + 0.5f), static_cast<int>(y + 0.5f), color);
+    }
+}
+
+void FillSquareWithVerticalHermite(HDC hdc, POINT topLeft, int side, POINT R0, POINT R1, COLORREF color) {
+    for (int x = 0; x <= side; x += 4) {
+        POINT P0 = { topLeft.x + x, topLeft.y };
+        POINT P1 = { topLeft.x + x, topLeft.y + side };
+
+        DrawHermite(hdc, P0, P1, R0, R1, color);
+    }
+}

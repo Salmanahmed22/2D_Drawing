@@ -21,5 +21,6 @@ void FillQuarterLine(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c)
 void FillQuarterWithCircles(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c);
 void FloodFill(HDC hdc, int x, int y, COLORREF borderColor, COLORREF fillColor);
 void FloodFillRec(HDC hdc , int x ,int y , COLORREF borderColor, COLORREF fillColor);
+void FillSquareWithVerticalHermite(HDC hdc, POINT topLeft, int side, POINT R0, POINT R1, COLORREF color);
 
 #endif //INC_2D_DRAWING_FILLING_H

@@ -53,7 +53,6 @@ using namespace std;
 
 
 struct Vars {
-    HBRUSH BGBrush = (HBRUSH)GetStockObject(DKGRAY_BRUSH);
     COLORREF c = RGB(255, 0, 0);
     int currentOption = 0;
     int x1 = 0 , y1 = 0 , x2 = 0 , y2 = 0;

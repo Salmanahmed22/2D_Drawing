@@ -91,6 +91,7 @@ HMENU SetupMenus() {
     AppendMenu(hOptions, MF_POPUP, (UINT_PTR)hBackgroundColor, "Background");
     AppendMenu(hOptions, MF_POPUP, (UINT_PTR)hCursor, "Cursor");
     AppendMenu(hOptions, MF_POPUP, (UINT_PTR)hColors, "Color");
+    AppendMenu(hOptions, MF_STRING, IDM_CLEAR, "Clear");
     AppendMenu(hOptions, MF_STRING, IDM_SAVE, "Save");
     AppendMenu(hOptions, MF_STRING, IDM_LOAD, "Load");
 
@@ -103,7 +104,7 @@ HMENU SetupMenus() {
     return hMenuBar;
 }
 
-void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){
+void HandleChoice(HBRUSH &hBackgroundBrush, HCURSOR &hCurrentCursor,HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){
     switch (LOWORD(wp)) {
         case IDM_BG_WHITE: {
             hBackgroundBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -272,7 +273,6 @@ void HandleChoice(HBRUSH hBackgroundBrush, HCURSOR hCurrentCursor,HWND hwnd, WPA
 
     }
 }
-
 void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){
     switch (vars.currentOption) {
         //circle
@@ -370,35 +370,20 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             ReleaseDC(hwnd, hdc);
             break;
         }
-        case IDM_FLOOD_RECURSIVE:{}
+        case IDM_FLOOD_RECURSIVE:{
+            break;
+        }
         //line
-        case  IDM_LINE_PARAMETRIC:{
-            vars.x1 = LOWORD(lp);
-            vars.y1 = HIWORD(lp);
-            break;
-        }
-        case  IDM_LINE_MIDPOINT:{
-            vars.x1 = LOWORD(lp);
-            vars.y1 = HIWORD(lp);
-            break;
-        }
+        case  IDM_LINE_PARAMETRIC:
+        case  IDM_LINE_MIDPOINT:
         case  IDM_LINE_DDA:{
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);
             break;
         }
         //ellipse
-        case IDM_ELLIPSE_DIRECT:{
-            // Save center of ellipse
-            vars.xc = LOWORD(lp);
-            vars.yc = HIWORD(lp);
-            break;
-        }
-        case IDM_ELLIPSE_POLAR:{
-            vars.xc = LOWORD(lp);
-            vars.yc = HIWORD(lp);
-            break;
-        }
+        case IDM_ELLIPSE_DIRECT:
+        case IDM_ELLIPSE_POLAR:
         case IDM_ELLIPSE_MIDPOINT:{
             vars.xc = LOWORD(lp);
             vars.yc = HIWORD(lp);
@@ -448,7 +433,7 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             ReleaseDC(hwnd, hdc);
             break;
         }
-
+        //clipping
         case IDM_CLIP_RECT_LINE:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
@@ -473,26 +458,29 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             CohenSutherland(p1,p2,vars.squareWindow,hdc,vars.c);
             break;
         }
-
+        // Line
         case IDM_LINE_MIDPOINT:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineMidPoint(hdc,vars.x1,vars.y1,vars.x2,vars.y2,vars.c);
+            break;
         }
         case IDM_LINE_PARAMETRIC:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineParametric(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
+            break;
         }
         case IDM_LINE_DDA:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineDDA(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
+            break;
         }
-
+        // Ellipse
         case IDM_ELLIPSE_DIRECT:{
             hdc = GetDC(hwnd);
             int x, y;
@@ -501,6 +489,7 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc); // Horizontal radius
             int b = abs(y - vars.yc); // Vertical radius
             DrawEllipseDirect(hdc, vars.xc, vars.yc, a, b, vars.c);
+            break;
         }
         case IDM_ELLIPSE_POLAR:{
             hdc = GetDC(hwnd);
@@ -510,7 +499,9 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc);
             int b = abs(y - vars.yc);
             DrawEllipsePolar(hdc, vars.xc, vars.yc, a, b, vars.c);
-        }case IDM_ELLIPSE_MIDPOINT:{
+            break;
+        }
+        case IDM_ELLIPSE_MIDPOINT:{
             hdc = GetDC(hwnd);
             int x, y;
             x = LOWORD(lp);
@@ -518,12 +509,12 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc);
             int b = abs(y - vars.yc);
             DrawEllipseMidpoint(hdc, vars.xc, vars.yc, a, b, vars.c);
+            break;
         }
         default:
             break;
     }
 }
-
 void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars){
     switch (vars.currentOption){
         case IDM_FILL_CONVEX:{

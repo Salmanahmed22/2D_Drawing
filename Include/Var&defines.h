@@ -14,6 +14,7 @@ using namespace std;
 #define IDM_CURSOR_CROSS      4
 #define IDM_SAVE              5
 #define IDM_LOAD              6
+#define IDM_CLEAR             7
 
 // Shape Algorithms
 #define IDM_LINE_DDA          100

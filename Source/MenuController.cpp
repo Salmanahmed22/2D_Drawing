@@ -409,6 +409,36 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             ReleaseDC(hwnd, hdc);
             break;
         }
+        case IDM_FILL_RECT_BEZIER:{
+
+            if (vars.BezzierPoints.size() < 3) {
+                POINT p = { LOWORD(lp), HIWORD(lp) };
+                vars.BezzierPoints.push_back(p);
+
+                HDC hdc = GetDC(hwnd);
+                Ellipse(hdc, p.x - 3, p.y - 3, p.x + 3, p.y + 3); // draw dot
+                ReleaseDC(hwnd, hdc);
+
+                if (vars.BezzierPoints.size() == 3) {
+                    ComputeRectangleFromPoints(vars.BezzierPoints,vars.rectangleReady,vars.rectangleBounds);
+                    InvalidateRect(hwnd, NULL, TRUE);
+                }
+            }
+
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
+
+            if (vars.rectangleReady) {
+                int width = vars.rectangleBounds.right - vars.rectangleBounds.left;
+                int height = vars.rectangleBounds.bottom - vars.rectangleBounds.top;
+                FillRectangleWithBezierHorizontal(hdc, vars.rectangleBounds.left, vars.rectangleBounds.top, width, height, RGB(0, 150, 255));
+            }
+
+            EndPaint(hwnd, &ps);
+
+            break;
+
+        }
         //line
         case  IDM_LINE_PARAMETRIC:{
             vars.x1 = LOWORD(lp);

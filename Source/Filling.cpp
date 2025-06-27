@@ -2,6 +2,8 @@
 #include <bits/stdc++.h>
 #include "../Include/Utils.h"
 #include "../Include/Filling.h"
+#include "../Include/Curves.h"
+
 using namespace std;
 
 //convex fill
@@ -242,5 +244,39 @@ void FillSquareWithVerticalHermite(HDC hdc, POINT topLeft, int side, POINT R0, P
 
         DrawHermite(hdc, P0, P1, R0, R1, color);
     }
+
+
+}
+
+
+void FillRectangleWithBezierHorizontal(HDC hdc, int xLeft, int yTop, int width, int height, COLORREF color) {
+    int xRight = xLeft + width;
+    int yBottom = yTop + height;
+
+    HPEN hPen = CreatePen(PS_SOLID, 1, color);
+    HGDIOBJ oldPen = SelectObject(hdc, hPen);
+
+    for (int y = yTop; y <= yBottom; y += 5) {
+        POINT P0 = { xLeft, y };
+        POINT P1 = { xLeft + width / 3, y + 30 };
+        POINT P2 = { xLeft + 2 * width / 3, y - 30 };
+        POINT P3 = { xRight, y };
+
+        DrawBezierCurve(hdc, P0, P1, P2, P3);
+    }
+
+    SelectObject(hdc, oldPen);
+    DeleteObject(hPen);
+}
+
+// Update rectangle bounds based on 3 points
+void ComputeRectangleFromPoints(vector<POINT> BezzierPoints , bool & rectangleReady , RECT & rectangleBounds) {
+    int minX = std::min({ BezzierPoints[0].x, BezzierPoints[1].x, BezzierPoints[2].x });
+    int maxX = std::max({ BezzierPoints[0].x, BezzierPoints[1].x, BezzierPoints[2].x });
+    int minY = std::min({ BezzierPoints[0].y, BezzierPoints[1].y, BezzierPoints[2].y });
+    int maxY = std::max({ BezzierPoints[0].y, BezzierPoints[1].y, BezzierPoints[2].y });
+
+    rectangleBounds = { minX, minY, maxX, maxY };
+    rectangleReady = true;
 }
 

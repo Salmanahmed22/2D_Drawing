@@ -4,6 +4,8 @@
 #include "../Include/Filling.h"
 using namespace std;
 
+//convex fill
+
 void InitTable(Table t) {
     for (int i = 0; i < 1000; ++i) {
         t[i].xLeft = INT_MAX;
@@ -51,6 +53,80 @@ void ConvexFill(HDC hdc, const vector<POINT>& p, COLORREF c) {
     polygonToTable((POINT*)&p[0], p.size(), t);
     tableToScreen(hdc, t, c);
 }
+
+//general fill
+
+void InitEdgeTable(edgeTable t){
+    for (int i = 0; i < 2000; ++i) {
+        t[i].clear();
+    }
+}
+
+void buildEdgeTable(const vector<POINT>& pts, edgeTable t) {
+    for (size_t i = 0; i < pts.size(); ++i) {
+        POINT p1 = pts[i];
+        POINT p2 = pts[(i + 1) % pts.size()];
+
+        if (p1.y == p2.y) continue;
+
+        int ymin = std::min(p1.y, p2.y);
+        int ymax = std::max(p1.y, p2.y);
+        float x = (p1.y < p2.y) ? p1.x : p2.x;
+        float dx = (float)(p2.x - p1.x) / (p2.y - p1.y);
+
+        Edge e = { x, dx, ymax };
+        t[ymin].push_back(e);
+    }
+}
+
+void scanlineFill(HDC hdc, edgeTable t, COLORREF c) {
+    vector<Edge> active;
+
+    HPEN hPen = CreatePen(PS_SOLID, 1, c);
+    HBRUSH hBrush = CreateSolidBrush(c);
+
+    HPEN hOldPen = (HPEN)SelectObject(hdc, hPen);
+    HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+    for (int y = 0; y < 2000; ++y) {
+        for (auto& e : t[y]) {
+            active.push_back(e);
+        }
+
+        if (active.empty()) continue;
+
+        sort(active.begin(), active.end(), [](const Edge& a, const Edge& b) {
+            return a.x < b.x;
+        });
+
+        for (size_t i = 0; i + 1 < active.size(); i += 2) {
+            MoveToEx(hdc, (int)round(active[i].x), y, NULL);
+            LineTo(hdc, (int)round(active[i + 1].x), y);
+        }
+
+        for (auto& e : active) {
+            e.x += e.dx;
+        }
+
+        active.erase(remove_if(active.begin(), active.end(), [y](const Edge& e) {
+            return y + 1 >= e.ymax;
+        }), active.end());
+    }
+
+    SelectObject(hdc, hOldPen);
+    SelectObject(hdc, hOldBrush);
+    DeleteObject(hPen);
+    DeleteObject(hBrush);
+}
+
+void GeneralFill(HDC hdc, const vector<POINT>& pts, COLORREF c){
+    edgeTable t;
+    InitEdgeTable(t);
+    buildEdgeTable(pts, t);
+    scanlineFill(hdc, t, c);
+}
+
+//
 
 void FillQuarterLine(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c) {
     int dx = px - xc;
@@ -167,3 +243,4 @@ void FillSquareWithVerticalHermite(HDC hdc, POINT topLeft, int side, POINT R0, P
         DrawHermite(hdc, P0, P1, R0, R1, color);
     }
 }
+

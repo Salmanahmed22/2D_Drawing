@@ -371,39 +371,6 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             break;
         }
         case IDM_FLOOD_RECURSIVE:{}
-        case IDM_FILL_SQUARE_HERM:{
-            hdc = GetDC(hwnd);
-            int x = LOWORD(lp);
-            int y = HIWORD(lp);
-
-            switch (vars.clickCount) {
-                case 0:
-                    vars.squareTopLeft = { x, y };
-                    break;
-                case 1:
-                    vars.squareBottomRight = { x, y };
-                    vars.squareSize = abs(vars.squareBottomRight.x - vars.squareTopLeft.x);
-                    break;
-                case 2:
-                    vars.tangentClickTop = { x, y };
-                    vars.R0 = { vars.tangentClickTop.x - vars.squareTopLeft.x, vars.tangentClickTop.y - vars.squareTopLeft.y };
-                    break;
-                case 3:
-                    vars.tangentClickBottom = { x, y };
-                    POINT bottomPoint = { vars.squareTopLeft.x, vars.squareTopLeft.y + vars.squareSize };
-                    vars.R1 = { vars.tangentClickBottom.x - bottomPoint.x, vars.tangentClickBottom.y - bottomPoint.y };
-                    vars.readyToDraw = true;
-                    InvalidateRect(hwnd, NULL, TRUE); // trigger WM_PAINT
-                    break;
-            }
-            vars.clickCount = (vars.clickCount + 1) % 4;
-
-            if (vars.readyToDraw) {
-                FillSquareWithVerticalHermite(hdc, vars.squareTopLeft, vars.squareSize, vars.R0, vars.R1, vars.c);
-            }
-            ReleaseDC(hwnd, hdc);
-            break;
-        }
         //line
         case  IDM_LINE_PARAMETRIC:{
             vars.x1 = LOWORD(lp);

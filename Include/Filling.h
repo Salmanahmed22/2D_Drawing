@@ -12,11 +12,26 @@ struct TableEntry {
 };
 typedef TableEntry Table[1000];
 
+struct Edge {
+    float x;
+    float dx;
+    int ymax;
+};
+
+typedef vector<Edge> edgeTable[2000];
+
 void InitTable(Table t);
 void edge2Table(POINT p1, POINT p2, Table t);
 void polygonToTable(POINT p[], int n, Table t);
 void tableToScreen(HDC hdc, Table t, COLORREF c);
 void ConvexFill(HDC hdc, const vector<POINT>& p, COLORREF c);
+
+void InitEdgeTable(edgeTable t);
+void buildEdgeTable(const vector<POINT>& pts, edgeTable t);
+void scanlineFill(HDC hdc, edgeTable t, COLORREF c);
+void GeneralFill(HDC hdc, const vector<POINT>& pts, COLORREF c);
+
+
 void FillQuarterLine(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c);
 void FillQuarterWithCircles(HDC hdc, int xc, int yc, int r, int px, int py, COLORREF c);
 void FloodFill(HDC hdc, int x, int y, COLORREF borderColor, COLORREF fillColor);

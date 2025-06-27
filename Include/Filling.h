@@ -38,5 +38,5 @@ void FloodFill(HDC hdc, int x, int y, COLORREF borderColor, COLORREF fillColor);
 void FloodFillRec(HDC hdc , int x ,int y , COLORREF borderColor, COLORREF fillColor);
 void FillSquareWithVerticalHermite(HDC hdc, POINT topLeft, int side, POINT R0, POINT R1, COLORREF color);
 void FillRectangleWithBezierHorizontal(HDC hdc, int xLeft, int yTop, int width, int height, COLORREF color);
-void ComputeRectangleFromPoints(vector<POINT> BezzierPoints , bool & rectangleReady , RECT & rectangleBounds);
+void ComputeRectangleFromPoints(vector<POINT> BezzierPoints , RECT & rectangleBounds);
 #endif //INC_2D_DRAWING_FILLING_H

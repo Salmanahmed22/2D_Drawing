@@ -270,13 +270,13 @@ void FillRectangleWithBezierHorizontal(HDC hdc, int xLeft, int yTop, int width, 
 }
 
 // Update rectangle bounds based on 3 points
-void ComputeRectangleFromPoints(vector<POINT> BezzierPoints , bool & rectangleReady , RECT & rectangleBounds) {
+void ComputeRectangleFromPoints(vector<POINT> BezzierPoints , RECT & rectangleBounds) {
     int minX = std::min({ BezzierPoints[0].x, BezzierPoints[1].x, BezzierPoints[2].x });
     int maxX = std::max({ BezzierPoints[0].x, BezzierPoints[1].x, BezzierPoints[2].x });
     int minY = std::min({ BezzierPoints[0].y, BezzierPoints[1].y, BezzierPoints[2].y });
     int maxY = std::max({ BezzierPoints[0].y, BezzierPoints[1].y, BezzierPoints[2].y });
 
     rectangleBounds = { minX, minY, maxX, maxY };
-    rectangleReady = true;
+
 }
 

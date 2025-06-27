@@ -371,8 +371,7 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             break;
         }
         case IDM_FLOOD_RECURSIVE:{}
-        case IDM_FILL_SQUARE_HERM:{
-            hdc = GetDC(hwnd);
+        case IDM_FILL_SQUARE_HERM: {
             int x = LOWORD(lp);
             int y = HIWORD(lp);
 
@@ -380,66 +379,60 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
                 case 0:
                     vars.squareTopLeft = { x, y };
                     break;
+
                 case 1:
                     vars.squareBottomRight = { x, y };
                     vars.squareSize = abs(vars.squareBottomRight.x - vars.squareTopLeft.x);
                     break;
+
                 case 2:
                     vars.tangentClickTop = { x, y };
                     vars.R0 = { vars.tangentClickTop.x - vars.squareTopLeft.x, vars.tangentClickTop.y - vars.squareTopLeft.y };
                     break;
+
                 case 3:
                     vars.tangentClickBottom = { x, y };
                     POINT bottomPoint = { vars.squareTopLeft.x, vars.squareTopLeft.y + vars.squareSize };
                     vars.R1 = { vars.tangentClickBottom.x - bottomPoint.x, vars.tangentClickBottom.y - bottomPoint.y };
-                    vars.readyToDraw = true;
-                    InvalidateRect(hwnd, NULL, TRUE); // trigger WM_PAINT
+
+                    // Now draw directly after all 4 points are ready
+                    HDC hdc = GetDC(hwnd);
+                    FillSquareWithVerticalHermite(hdc, vars.squareTopLeft, vars.squareSize, vars.R0, vars.R1, RGB(0, 128, 255));
+                    ReleaseDC(hwnd, hdc);
                     break;
             }
+
             vars.clickCount = (vars.clickCount + 1) % 4;
-
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-
-            if (vars.readyToDraw) {
-                FillSquareWithVerticalHermite(hdc, vars.squareTopLeft, vars.squareSize, vars.R0, vars.R1, RGB(0, 128, 255));
-            }
-
-            EndPaint(hwnd, &ps);
-            ReleaseDC(hwnd, hdc);
             break;
         }
-        case IDM_FILL_RECT_BEZIER:{
 
-            if (vars.BezzierPoints.size() < 3) {
-                POINT p = { LOWORD(lp), HIWORD(lp) };
-                vars.BezzierPoints.push_back(p);
+        case IDM_FILL_RECT_BEZIER: {
+            POINT p = { LOWORD(lp), HIWORD(lp) };
+            vars.BezzierPoints.push_back(p);
 
-                HDC hdc = GetDC(hwnd);
-                Ellipse(hdc, p.x - 3, p.y - 3, p.x + 3, p.y + 3); // draw dot
+            // Optional: draw a small visual dot
+            HDC hdc = GetDC(hwnd);
+            Ellipse(hdc, p.x - 3, p.y - 3, p.x + 3, p.y + 3);
+            ReleaseDC(hwnd, hdc);
+
+            if (vars.BezzierPoints.size() == 3) {
+                RECT rect;
+                ComputeRectangleFromPoints(vars.BezzierPoints, rect);
+
+                int width = rect.right - rect.left;
+                int height = rect.bottom - rect.top;
+
+                hdc = GetDC(hwnd);
+                FillRectangleWithBezierHorizontal(hdc, rect.left, rect.top, width, height, RGB(0, 150, 255));
                 ReleaseDC(hwnd, hdc);
 
-                if (vars.BezzierPoints.size() == 3) {
-                    ComputeRectangleFromPoints(vars.BezzierPoints,vars.rectangleReady,vars.rectangleBounds);
-                    InvalidateRect(hwnd, NULL, TRUE);
-                }
+                vars.BezzierPoints.clear(); // ✅ Reset for next shape
             }
-
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-
-            if (vars.rectangleReady) {
-                int width = vars.rectangleBounds.right - vars.rectangleBounds.left;
-                int height = vars.rectangleBounds.bottom - vars.rectangleBounds.top;
-                FillRectangleWithBezierHorizontal(hdc, vars.rectangleBounds.left, vars.rectangleBounds.top, width, height, RGB(0, 150, 255));
-            }
-
-            EndPaint(hwnd, &ps);
 
             break;
-
         }
-        //line
+
+            //line
         case  IDM_LINE_PARAMETRIC:{
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);

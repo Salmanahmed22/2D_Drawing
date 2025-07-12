@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <bits/stdc++.h>
 #include "Clipping.h"
+#include "Curves.h"
+
 using namespace std;
 
 #ifndef VAR_DEFINES_H
@@ -63,7 +65,6 @@ struct Vars {
     bool rectangleReady = false;
     RECT rectangleBounds;
     vector<POINT> convexPoints , nonConvexPoints ;
-//    vector<Vector2> splinePoints;
     Window squareWindow = Window(100, 500, 100, 500);
     Window rectangleWindow = Window(100, 700, 100, 500);
     vector<POINT> clipWindowPoints;
@@ -76,6 +77,7 @@ struct Vars {
     POINT tangentClickBottom;
     int squareSize = 0;
     POINT R0,R1;
+    std::vector<Point2D> cardinalSplinePoints;
     bool readyToDraw = false;
     int polygonPointsExpected = 0;
 };

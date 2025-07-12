@@ -32,7 +32,7 @@ void DrawHermiteCurve(HDC hdc , int x1, int y1 , int u1, int v1 , int x2, int y2
         SetPixel(hdc, Round(x), Round(y),c);
     }
 }
-void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3) {
+void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2, const POINT& P3, COLORREF c) {
     POINT alpha, beta, gamma, delta;
     computeBezierCoefficients(P0, P1, P2, P3, alpha, beta, gamma, delta);
 
@@ -40,7 +40,7 @@ void DrawBezierCurve(HDC hdc, const POINT& P0, const POINT& P1, const POINT& P2,
     for (int i = 0; i <= steps; ++i) {
         double t = (double)i / steps;
         POINT pt = bezierPoint(t, alpha, beta, gamma, delta);
-        SetPixel(hdc, Round(pt.x), Round(pt.y), RGB(255, 0, 0));
+        SetPixel(hdc, Round(pt.x), Round(pt.y), c);
     }
 }
 void DrawCardinalSpline(HDC hdc, Point2D P[], int n, double c, COLORREF color) {

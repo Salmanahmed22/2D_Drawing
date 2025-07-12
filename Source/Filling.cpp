@@ -262,7 +262,7 @@ void FillRectangleWithBezierHorizontal(HDC hdc, int xLeft, int yTop, int width, 
         POINT P2 = { xLeft + 2 * width / 3, y - 30 };
         POINT P3 = { xRight, y };
 
-        DrawBezierCurve(hdc, P0, P1, P2, P3);
+        DrawBezierCurve(hdc, P0, P1, P2, P3,color);
     }
 
     SelectObject(hdc, oldPen);

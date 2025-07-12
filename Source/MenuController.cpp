@@ -468,8 +468,21 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             }
             break;
         }
+        case IDM_CARDINAL_SPLINE: {
+            Point2D p;
+            p.x = LOWORD(lp);
+            p.y = HIWORD(lp);
 
-        //filling
+            vars.cardinalSplinePoints.push_back(p);
+
+            hdc = GetDC(hwnd);
+            Ellipse(hdc, p.x - 2, p.y - 2, p.x + 2, p.y + 2);  // Visual feedback
+            ReleaseDC(hwnd, hdc);
+            break;
+        }
+
+
+            //filling
         case IDM_FLOOD_NONREC: {
             vars.x1 = LOWORD(lp);
             vars.y1 = HIWORD(lp);
@@ -539,7 +552,7 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
                     // Now draw directly after all 4 points are ready
                     HDC hdc = GetDC(hwnd);
                     FillSquareWithVerticalHermite(hdc, vars.squareTopLeft, vars.squareSize, vars.R0, vars.R1,
-                                                  RGB(0, 128, 255));
+                                                 vars.c);
                     ReleaseDC(hwnd, hdc);
                     break;
                 }
@@ -568,7 +581,7 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
                 int height = rect.bottom - rect.top;
 
                 hdc = GetDC(hwnd);
-                FillRectangleWithBezierHorizontal(hdc, rect.left, rect.top, width, height, RGB(0, 150, 255));
+                FillRectangleWithBezierHorizontal(hdc, rect.left, rect.top, width, height, vars.c);
                 ReleaseDC(hwnd, hdc);
 
                 vars.BezzierPoints.clear(); // ✅ Reset for next shape
@@ -757,6 +770,16 @@ void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &va
             }
             break;
         }
+        case IDM_CARDINAL_SPLINE: {
+            if (vars.cardinalSplinePoints.size() >= 4) {
+                hdc = GetDC(hwnd);
+                DrawCardinalSpline(hdc, vars.cardinalSplinePoints.data(), (int)vars.cardinalSplinePoints.size(), 0.5, vars.c);
+                ReleaseDC(hwnd, hdc);
+            }
+            vars.cardinalSplinePoints.clear();
+            break;
+        }
+
         default:
             break;
     }

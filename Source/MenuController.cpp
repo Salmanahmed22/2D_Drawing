@@ -93,6 +93,7 @@ HMENU SetupMenus() {
     AppendMenu(hOptions, MF_POPUP, (UINT_PTR)hColors, "Color");
     AppendMenu(hOptions, MF_STRING, IDM_SAVE, "Save");
     AppendMenu(hOptions, MF_STRING, IDM_LOAD, "Load");
+    AppendMenu(hOptions, MF_STRING, IDM_CLEAR, "Clear");
 
     // Final Menu Bar
     AppendMenu(hMenuBar, MF_POPUP, (UINT_PTR)hOptions, "Options");
@@ -141,6 +142,10 @@ void HandleChoice(HBRUSH &hBackgroundBrush,HCURSOR &hCurrentCursor,HWND hwnd,WPA
         }
         case IDM_LOAD: {
             vars.currentOption = IDM_LOAD;
+            break;
+        }
+        case IDM_CLEAR: {
+            InvalidateRect(hwnd, nullptr, TRUE);
             break;
         }
 
@@ -318,7 +323,9 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             p1.x = vars.x1;
             p1.y = vars.y1;
             if (pointClipping(p1,vars.rectangleWindow)){
-
+                hdc = GetDC(hwnd);
+                Ellipse(hdc, p1.x - 3, p1.y - 3, p1.x + 3, p1.y + 3);
+                ReleaseDC(hwnd, hdc);
             }
             break;
         }
@@ -363,14 +370,27 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
             FillQuarterWithCircles(hdc,vars.xc,vars.yc,vars.r,vars.x1,vars.y1,vars.c);
             break;
         }
-        case IDM_FILL_CONVEX:{
-            vars.convexPoints.push_back({LOWORD(lp), HIWORD(lp)});
+        case IDM_FILL_CONVEX:
+        case IDM_FILL_NONCONVEX:{
+            int x = LOWORD(lp);
+            int y = HIWORD(lp);
+            POINT pt = {x, y};
+            if(vars.currentOption == IDM_FILL_CONVEX)
+                vars.convexPoints.push_back(pt);
+            else if(vars.currentOption == IDM_FILL_NONCONVEX)
+                vars.nonConvexPoints.push_back(pt);
             hdc = GetDC(hwnd);
-            SetPixel(hdc, vars.convexPoints.back().x, vars.convexPoints.back().y, vars.c);
+            Ellipse(hdc, x - 3, y - 3, x + 3, y + 3);
             ReleaseDC(hwnd, hdc);
             break;
         }
-        case IDM_FLOOD_RECURSIVE:{}
+        case IDM_FLOOD_RECURSIVE: {
+            vars.x1 = LOWORD(lp);
+            vars.y1 = HIWORD(lp);
+            hdc = GetDC(hwnd);
+            FloodFillRec(hdc,vars.x1,vars.y1, vars.c,vars.c);
+            break;
+        }
         case IDM_FILL_SQUARE_HERM: {
             int x = LOWORD(lp);
             int y = HIWORD(lp);
@@ -390,15 +410,19 @@ void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &var
                     vars.R0 = { vars.tangentClickTop.x - vars.squareTopLeft.x, vars.tangentClickTop.y - vars.squareTopLeft.y };
                     break;
 
-                case 3:
-                    vars.tangentClickBottom = { x, y };
-                    POINT bottomPoint = { vars.squareTopLeft.x, vars.squareTopLeft.y + vars.squareSize };
-                    vars.R1 = { vars.tangentClickBottom.x - bottomPoint.x, vars.tangentClickBottom.y - bottomPoint.y };
+                case 3: {
+                    vars.tangentClickBottom = {x, y};
+                    POINT bottomPoint = {vars.squareTopLeft.x, vars.squareTopLeft.y + vars.squareSize};
+                    vars.R1 = {vars.tangentClickBottom.x - bottomPoint.x, vars.tangentClickBottom.y - bottomPoint.y};
 
                     // Now draw directly after all 4 points are ready
                     HDC hdc = GetDC(hwnd);
-                    FillSquareWithVerticalHermite(hdc, vars.squareTopLeft, vars.squareSize, vars.R0, vars.R1, RGB(0, 128, 255));
+                    FillSquareWithVerticalHermite(hdc, vars.squareTopLeft, vars.squareSize, vars.R0, vars.R1,
+                                                  RGB(0, 128, 255));
                     ReleaseDC(hwnd, hdc);
+                    break;
+                }
+                default:
                     break;
             }
 
@@ -540,18 +564,22 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineMidPoint(hdc,vars.x1,vars.y1,vars.x2,vars.y2,vars.c);
+            break;
         }
         case IDM_LINE_PARAMETRIC:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineParametric(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
+            break;
+
         }
         case IDM_LINE_DDA:{
             hdc = GetDC(hwnd);
             vars.x2 = LOWORD(lp);
             vars.y2 = HIWORD(lp);
             DrawLineDDA(hdc, vars.x1, vars.y1, vars.x2, vars.y2, vars.c);
+            break;
         }
 
         case IDM_ELLIPSE_DIRECT:{
@@ -562,6 +590,7 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc); // Horizontal radius
             int b = abs(y - vars.yc); // Vertical radius
             DrawEllipseDirect(hdc, vars.xc, vars.yc, a, b, vars.c);
+            break;
         }
         case IDM_ELLIPSE_POLAR:{
             hdc = GetDC(hwnd);
@@ -571,7 +600,9 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc);
             int b = abs(y - vars.yc);
             DrawEllipsePolar(hdc, vars.xc, vars.yc, a, b, vars.c);
-        }case IDM_ELLIPSE_MIDPOINT:{
+            break;
+        }
+        case IDM_ELLIPSE_MIDPOINT:{
             hdc = GetDC(hwnd);
             int x, y;
             x = LOWORD(lp);
@@ -579,6 +610,7 @@ void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars& vars)
             int a = abs(x - vars.xc);
             int b = abs(y - vars.yc);
             DrawEllipseMidpoint(hdc, vars.xc, vars.yc, a, b, vars.c);
+            break;
         }
         default:
             break;
@@ -593,6 +625,15 @@ void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &va
             ConvexFill(hdc, vars.convexPoints, vars.c);
             ReleaseDC(hwnd, hdc);
             vars.convexPoints.clear();
+            break;
+        }
+        case IDM_FILL_NONCONVEX:{
+            if(vars.nonConvexPoints.size() >= 3){
+                hdc = GetDC(hwnd);
+                GeneralFill(hdc, vars.nonConvexPoints, vars.c);
+                ReleaseDC(hwnd, hdc);
+                vars.nonConvexPoints.clear();
+            }
             break;
         }
         default:

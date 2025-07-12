@@ -20,8 +20,10 @@ void HandleChoice(
         HDC hdc,
         Vars &vars
 );
+
 void HandleLeftButtonUP(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);
 void HandleLeftButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);
 void HandleRightButtonDOWN(HWND hwnd, WPARAM wp , LPARAM lp , HDC hdc , Vars &vars);
-
+void SaveWindow(HWND hwnd);
+void LoadWindow(HWND hwnd);
 #endif //INC_2D_DRAWING_HANDLE_BUTTONS_H
